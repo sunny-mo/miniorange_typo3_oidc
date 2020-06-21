@@ -1,34 +1,27 @@
 #
 
-CREATE TABLE saml (
-
+CREATE TABLE mo_oidc (
   uid int(11) NOT NULL auto_increment,
   pid int(11) DEFAULT '0' NOT NULL,
-  idp_name varchar (100) DEFAULT '' NOT NULL ,
-  idp_entity_id varchar (100) DEFAULT '' NOT NULL,
-  saml_login_url varchar (100) DEFAULT '' NOT NULL,
-  saml_logout_url varchar (100) DEFAULT '' NOT NULL,
-  x509_certificate varchar (1500) DEFAULT '',
-  login_binding_type varchar (100) DEFAULT '' ,
-  site_base_url varchar (100) DEFAULT '' NOT NULL,
-  fesaml varchar (100) DEFAULT '' NOT NULL,
-  response varchar (100) DEFAULT '' NOT NULL,
-  force_authn varchar (100) DEFAULT '' ,
-  sp_entity_id varchar (100) DEFAULT '' NOT NULL,
-  acs_url varchar (100) DEFAULT '' NOT NULL,
-  slo_url varchar (100) DEFAULT '' ,
-  custom_attr int (11) DEFAULT '0' ,
-  saml_am_email varchar (100) DEFAULT '',
-  saml_am_username varchar (100) DEFAULT '',
-  saml_am_fname varchar (100) DEFAULT '',
-  saml_am_lname varchar (100) DEFAULT '' ,
-  object text DEFAULT '',
-  spobject text DEFAULT '',
-  attrobject text DEFAULT '',
+  app_name varchar (100) DEFAULT '' NOT NULL ,
+  app_display_name varchar (100) DEFAULT '' NOT NULL,
+  redirect_url varchar (100) DEFAULT '' NOT NULL,
+  client_id varchar (100) DEFAULT '' NOT NULL,
+  client_secret varchar (1500) DEFAULT '',
+  scope varchar (100) DEFAULT '' ,
+  auth_endpoint varchar (100) DEFAULT '' NOT NULL,
+  token_endpoint varchar (100) DEFAULT '' NOT NULL,
+  user_info_endpoint varchar (100) DEFAULT '' NOT NULL,
+  set_header_credentials varchar (100) DEFAULT '' ,
+  set_body_credentials varchar (100) DEFAULT '',
+  grant_type varchar (100) DEFAULT '',
+  oidc_am_username varchar (100) DEFAULT '' ,
+  oidc_object text DEFAULT '',
+  am_object text DEFAULT '',
 	PRIMARY KEY (uid)
 );
 
-CREATE TABLE customer (
+CREATE TABLE mo_customer (
 
 	id int(11) NOT NULL auto_increment,
 	cust_email varchar (100) DEFAULT '' ,
@@ -40,9 +33,9 @@ CREATE TABLE customer (
 );
 
 
-# Table structure for table 'tx_samlsppremium_domain_model_fesaml'
+# Table structure for table 'tx_miniorangeoidc_domain_model_feoidc'
 #
--- CREATE TABLE tx_samlsppremium_domain_model_fesaml (
+-- CREATE TABLE tx_miniorangeoidc_domain_model_feoidc (
 
 -- 	uid int(11) NOT NULL auto_increment,
 -- 	pid int(11) DEFAULT '0' NOT NULL,
@@ -78,9 +71,9 @@ CREATE TABLE customer (
 -- );
 
 -- #
--- # Table structure for table 'tx_samlsppremium_domain_model_besaml'
+-- # Table structure for table 'tx_miniorangeoidc_domain_model_beoidc'
 -- #
--- CREATE TABLE tx_samlsppremium_domain_model_besaml (
+-- CREATE TABLE tx_miniorangeoidc_domain_model_beoidc (
 --
 -- 	uid int(11) NOT NULL auto_increment,
 -- 	pid int(11) DEFAULT '0' NOT NULL,
@@ -116,9 +109,9 @@ CREATE TABLE customer (
 -- );
 --
 -- #
--- # Table structure for table 'tx_samlsppremium_domain_model_response'
+-- # Table structure for table 'tx_miniorangeoidc_domain_model_response'
 -- #
--- CREATE TABLE tx_samlsppremium_domain_model_response (
+-- CREATE TABLE tx_miniorangeoidc_domain_model_response (
 --
 -- 	uid int(11) NOT NULL auto_increment,
 -- 	pid int(11) DEFAULT '0' NOT NULL,

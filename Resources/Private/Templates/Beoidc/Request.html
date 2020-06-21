@@ -2,34 +2,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Essential javascripts for application to work-->
-    <script src="includes/js/jquery-3.2.1.min.js"></script>
-    <script src="includes/js/popper.min.js"></script>
-    <script src="includes/js/bootstrap.min.js"></script>
-    <script src="includes/js/main.js"></script>
-    <!-- The javascript plugin to display page loading on top-->
-    <script src="includes/js/plugins/pace.min.js"></script>
+<!--    &lt;!&ndash; Essential javascripts for application to work&ndash;&gt;-->
+<!--    <script src="includes/js/jquery-3.2.1.min.js"></script>-->
+<!--    <script src="includes/js/popper.min.js"></script>-->
+<!--    <script src="includes/js/bootstrap.min.js"></script>-->
+<!--    <script src="includes/js/main.js"></script>-->
+<!--    &lt;!&ndash; The javascript plugin to display page loading on top&ndash;&gt;-->
+<!--    <script src="includes/js/plugins/pace.min.js"></script>-->
+<!--    -->
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <!-- Main CSS-->
-    <link rel="stylesheet" type="text/css" href="/../../sso/includes/css/main.css">
+<!--    <link rel="stylesheet" type="text/css" href="/../../sso/includes/css/main.css">-->
     <!-- Font-icon css-->
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>-->
-    <!--<script>-->
-    <!--$(document).ready(function(){-->
-    <!--if(localStorage.selected) {-->
-    <!--$('#' + localStorage.selected ).attr('checked', true);-->
-    <!--}-->
-    <!--$('.inputabs').click(function(){-->
-    <!--localStorage.setItem("selected", this.id);-->
-    <!--});-->
-    <!--});-->
-    <!--</script>-->
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -41,6 +34,11 @@
         }
 
         .button {
+            font-size: 28px;
+            min-width: 200px;
+            margin: 5px;
+            padding: 5px;
+
             display: inline-block;
             border-radius: 2px;
             background-color: #f2f2f2;
@@ -49,12 +47,9 @@
             text-shadow: 2px 2px 4px #0f0e0e;
             font-weight: bold;
             text-align: center;
-            font-size: 28px;
-            padding: 5px;
-            width: 200px;
             transition: all 0.5s;
             cursor: pointer;
-            margin: 5px;
+
         }
 
         .button span {
@@ -188,7 +183,7 @@
         .premiumMessage{
             color: red;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 14px;
         }
 
         .premiumBox{
@@ -208,8 +203,7 @@
 
 <div class="tab">
     <button class="tablinks button" onclick="removeFlashMessage(); openTab(event,'Account')">Account</button>
-    <button class="tablinks button" onclick="removeFlashMessage(); openTab(event, 'Identity_Provider')">IdP Settings</button>
-    <button class="tablinks button" onclick="removeFlashMessage(); openTab(event, 'Service_Provider')">SP Settings</button>
+    <button class="tablinks button" onclick="removeFlashMessage(); openTab(event, 'OpenID_Connect')">Configure OpenId Connect</button>
     <button class="tablinks button" onclick="removeFlashMessage(); openTab(event, 'Attribute_Mapping')">Attribute Mapping</button>
     <button class="tablinks button" onclick="removeFlashMessage(); openTab(event,'Support')">Support</button>
 </div>
@@ -220,171 +214,99 @@
     <!--Left Container-->
     <div id="leftContainer">
 
-        <!--   IDENTITY PROVIDER TAB-->
-        <div id="Identity_Provider" class="tabcontent"  >
-            <h3><strong>Identity Provider Settings</strong></h3>  <p class="premiumMessage" style={nolog} >  [Please login to configure settings.]</p>
+        <!--   Configure OpenID Connect tab-->
+        <div id="OpenID_Connect" class="tabcontent"  >
+            <h3><strong>Configure OpenID Connect Client </strong></h3>  <p class="premiumMessage" style={nolog} >  [Please login to configure settings.]</p>
             <hr>
             <div class="tile" >
-                <form method="POST" action="" id="saml_form" >
-                    <input type="hidden" name="option" value="save_connector_settings">
+                <form method="POST" action="" id="oidc_form" >
+                    <input type="hidden" name="option" value="oidc_settings">
                     <div class="form-group" >
-                        <label for="idp_name"><b>Identity Provider Name</b></label>
-                        <input class="form-control" {log} name="idp_name" id="idp_name" type="text" required value="{conf.idp_name}">
+                        <label for="app_name"><b>Application Name</b><span class="premiumMessage"> * </span></label>
+                        <input class="form-control" {log} name="app_name" id="app_name" type="text" required value="{conf.app_name}">
                     </div>
 
                     <div class="form-group">
-                        <label for="idp_entity_id"><b>IDP Entity ID</b></label>
-                        <input class="form-control" {log} name="idp_entity_id" id="idp_entity_id" type="text"
-                               required value="{conf.idp_entity_id}">
+                        <label for="redirect_url"><b>Redirect/Callback Url</b></label>
+                        <input class="form-control" {log} name="redirect_url" id="redirect_url" type="text"
+                               required value="{conf.redirect_url}">
                     </div>
 
                     <div class="form-group">
-                        <label for="saml_login_url"><b>SAML Login URL</b></label>
-                        <input class="form-control" {log} name="saml_login_url" id="saml_login_url" type="text"
-                               required value="{conf.saml_login_url}">
-                    </div>
-
-                    <div class="premiumBox" disabled >
-
-                        <label><strong>SAML Login Binding type</strong> <span class="premiumMessage">  [Premium Feature] </span></label>
-                        <table>
-                            <f:if condition="{0: conf.login_binding_type} == {0: 'HttpRedirect'} or {0: conf.login_binding_type} == {0: ''} ">
-                                <tr>
-                                    <td style="padding:10px;">
-                                        <div class="animated-radio-button">
-                                            <label>
-                                                <input class="inputabs" disabled checked type="radio" name="login_binding_type" id="http_redirect_binding1" value="HttpRedirect"><span class="label-text">Http-Redirect</span>
-                                            </label>
-                                        </div>
-                                    </td>
-                                    <td style="padding:10px;">
-
-                                        <div class="animated-radio-button">
-                                            <label>
-                                                <input class="inputabs" disabled  type="radio" name="login_binding_type" id="http_post_binding1" value="HttpPost"><span class="label-text">Http-Post</span>
-                                            </label>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </f:if>
-                            <f:if condition="{0: conf.login_binding_type} == {0: 'HttpPost'}">
-                                <tr>
-                                    <td style="padding:10px;">
-                                        <div class="animated-radio-button">
-                                            <label>
-                                                <input class = inputabs disabled checked type="radio" name="login_binding_type" id="http_redirect_binding" value="HttpRedirect"><span class="label-text">Http-Redirect</span>
-                                            </label>
-                                        </div>
-                                    </td>
-                                    <td style="padding:10px;">
-
-                                        <div class="animated-radio-button">
-                                            <label>
-                                                <input class = inputabs disabled checked type="radio" name="login_binding_type" id="http_post_binding" value="HttpPost"><span class="label-text">Http-Post</span>
-                                            </label>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </f:if>
-                        </table>
-                    </div>
-
-                    <div class="form-group" style= "border: black">
-                        <label for="x509_certificate"><b>SAML x509 Certificate</b></label>
-                        <textarea class="form-control" {log} id="x509_certificate" name="x509_certificate" rows="5" >{conf.x509_certificate}</textarea>
-                        <small><b>NOTE:</b> Format of the certificate:<br/><b>-----BEGIN CERTIFICATE-----<br/>XXXXXXXXXXXXXXXXXXXXXXXXXXX<br/>-----END CERTIFICATE-----</b></small><br/>
+                        <label for="app_display_name"><b>App Display Name</b><span class="premiumMessage"> * </span></label>
+                        <input class="form-control" {log} name="app_display_name" id="app_display_name" type="text"
+                               required value="{conf.app_display_name}">
                     </div>
 
                     <div class="form-group">
-                        <label for="saml_logout_url"><b>SAML Logout URL</b></label>
-                        <input class="form-control" {log} name="saml_logout_url" id="saml_logout_url" type="text" value="{conf.saml_logout_url}">
+                        <label for="client_id"><b>Client ID</b><span class="premiumMessage"> * </span></label>
+                        <input class="form-control" {log} name="client_id" id="client_id" type="text" value="{conf.client_id}">
                     </div>
-
-                    <label for="signing_info"><b>Signing</b></label>
-                    <p>Supports both Signed Assertion and Signed Response<i class="fa fa-question-circle" id="signing_info" style="padding-left:5px;"></i><br/></p>
 
                     <div class="form-group">
-                        <div style="display:none;" class="help_desc" id="signing_help_desc">
-                            Please make sure that your Identity Provider sign atleast one of them.
-                        </div>
+                        <label for="client_secret"><b>Client Secret</b><span class="premiumMessage"> * </span></label>
+                        <input class="form-control" {log} name="client_secret" id="client_secret" type="password" value="{conf.client_secret}">
                     </div>
 
-                    <div class="premiumBox" disabled >
-                        <div class="animated-checkbox">
-                            <input type="checkbox" disabled  id="force_authn"  name="force_authn" >
-                            <label> <span class="label-text">Force Authentication</span> <span class="premiumMessage"> [Premium Feature] </span></label>
-                            &nbsp
-                        </div>
+                    <div class="form-group">
+                        <label for="scope"><b>Scope</b></label>
+                        <input class="form-control" {log} name="scope" id="scope" type="text" value="{conf.scope}">
                     </div>
 
+                    <div class="form-group">
+                        <label for="auth_endpoint"><b>Authorization Endpoint</b><span class="premiumMessage"> * </span></label>
+                        <input class="form-control" {log} name="auth_endpoint" id="auth_endpoint" type="text" value="{conf.auth_endpoint}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="token_endpoint"><b>Access Token Endpoint</b><span class="premiumMessage"> * </span></label>
+                        <input class="form-control" {log} name="token_endpoint" id="token_endpoint" type="text" value="{conf.token_endpoint}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user_info_endpoint"><b>User Info Endpoint</b><span class="premiumMessage"> * </span></label>
+                        <input class="form-control" {log} name="user_info_endpoint" id="user_info_endpoint" type="text" value="{conf.user_info_endpoint}">
+                    </div>
+
+                    <div class="animated-checkbox">
+                        <input type="checkbox" {log}  id="set_header_credentials"  name="set_header_credentials" >
+                        <label> <span class="label-text">Set client credentials in Header</span></label>
+                        <input type="checkbox" {log}  id="set_body_credentials"  name="set_body_credentials" >
+                        <label> <span class="label-text">Set client credentials in Body</span></label>
+                    </div>
                     &nbsp
                     <div class="tile-footer">
-                        <button class="btn btn-primary" type="button" {log} name="submit_saml_form" id="submit_saml_form" style="margin-right:10px;" onClick="jQuery('#saml_form').submit();">Save</button>
-                        <a  {log} style="text-decoration:none"><button onClick="window.open('{conf2.fesaml}'+'?RelayState=testconfig');" {log} class="btn btn-primary" name="do_sso" type="button">Test Configuration</button></a>
+                        <button class="btn btn-primary" type="button" {log} name="submit_saml_form" id="submit_saml_form" style="margin-right:10px;" onClick="jQuery('#oidc_form').submit();">Save settings</button>
+<!--                        <a  {log} style="text-decoration:none"><button onClick="window.open('{conf2.feoidc}'+'?RelayState=testconfig');" {log} class="btn btn-primary" name="do_sso" type="button">Test Configuration</button></a>-->
                     </div>
-
                 </form>
+        </div>
+
+        <hr>
+
+         <div class="animated-checkbox">
+             <h4><strong>Grant Settings</strong> <span class="premiumMessage">[Premium Feature]</span> </h4>
+         </div>
+        &nbsp;
+        <div disabled >
+            <div class="animated-checkbox">
+                <input type="checkbox" disabled id="auth_code_grant" name="grant_type" value="auth_code_grant" checked="true" >
+                <label> <span class="label-text">Authorization Code Grant</span>  [Default]</label>
+            </div>
+            <div class="animated-checkbox">
+                <input type="checkbox"  id="implicit_grant" name="grant_type" value="implicit_grant" disabled >
+                <label> <span class="label-text">Implicit Grant</span></label>
+            </div>
+            <div class="animated-checkbox">
+                <input type="checkbox"  id="password_grant" name="grant_type" value="password_grant"  disabled >
+                <label> <span class="label-text">Password Grant</span></label>
+            </div>
+            <div class="animated-checkbox">
+                <input type="checkbox" id="refresh_token_grant" name="grant_type" value="refresh_token_grant"  disabled>
+                <label> <span class="label-text">Refresh Token Grant</span></label>
             </div>
         </div>
 
-        <!--   SERVICE PROVIDER TAB -->
-        <div id="Service_Provider"  class="tabcontent"  >
-            <h3><strong>Service Provider Settings</strong></h3> <div class="premiumMessage" style={nolog}> [Please login to configure settings.]</div>
-            <hr>
-            <div class="tile">
-                <form action="" method="post" id="sp_settings"  >
-
-                    <input type="hidden" name="option" value="save_sp_settings"/>
-                    <!--<div style="width: 40%; display: inline-block">-->
-                    <div class="form-group">
-                        <label for="fesaml"><b> URL with fesaml</b></label>
-                        <input class="form-control" {log} id="fesaml" name="fesaml" type="text" value="{conf2.fesaml}"
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="response"><b>URL with response</b></label>
-                        <input class="form-control" {log} id="response" name="response" type="text" value="{conf2.response}" >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="site_base_url"><b> Base URL</b></label>
-                        <input class="form-control" {log} id="site_base_url"
-                               name="site_base_url" type="text" value="{conf2.site_base_url}" >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="acs_url"><b>ACS URL</b></label>
-                        <input class="form-control" {log} id="acs_url" name="acs_url" type="text" value="{conf2.acs_url}" >
-                    </div>
-
-                    <div class="form-group" >
-                        <label for="sp_entity_id"><b>SP Entity ID</b></label>
-                        <input class="form-control" {log} id="sp_entity_id" name="sp_entity_id" type="text" value="{conf2.sp_entity_id}"
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="slo_url"><b>SINGLE LOGOUT URL</b></label>
-                        <input class="form-control" {log} id="slo_url" name="slo_url" type="text" value="{conf2.slo_url}"  >
-                    </div>
-
-                    <div class="form-group" style="margin:20px 0">
-                        <label><b>  SP Certificate:</b></label>
-                        <a style="padding-left:5px;" target="_blank" href="{extPath}sso/resources/miniorange_sp_cert.cer" id="download_sp_cert">Download</a><i class="fa fa-question-circle" id="sp_certificate_help" style="padding-left:5px;"></i>
-                        <br/>
-                        <div class="help_desc" id="sp_certificate_help_desc" style="display:none;">
-                            Provide this certificate to your Identity Provider for encryption or signing.
-                        </div>
-                    </div>
-
-                    <div class="tile-footer form-group">
-                        <button class="btn btn-primary" type="button" name="sp_settings_form" {log} id="sp_setting_form" style="margin-right:40px; padding: 7px 25px " onClick="jQuery('#sp_settings').submit();"> Save </button>
-                        <a href="https://www.miniorange.com/typo3-single-sign-on-(sso)" target="_blank">Click Here for User Guide</a>
-                    </div>
-
-                </form>
-            </div>
         </div>
 
         <!--   ATTRIBUTE MAPPING TAB-->
@@ -392,29 +314,34 @@
             <form id="attrs_form" method="post" action ="">
                 <input type="hidden" name="option" value="attribute_mapping">
                 <!--            <br>-->
-                <h3><strong>Attribute Mapping</strong> <span class="premiumMessage"> [Premium Feature ] </span></h3>
+                <h3><strong>Attribute Mapping</strong> </h3>
                 <hr>
                 <div class="tile">
-
                     <div class="form-group">
-                        <label for="saml_am_username"><strong>Username</strong><span class="premiumMessage"> * </span></label>
-                        <input class="form-control" disabled id="saml_am_username" name="saml_am_username" type="text" value = "NameID">
+                        <label for="oidc_am_username"><strong>Username</strong><span class="premiumMessage"> * </span></label>
+                        <input class="form-control" {log} id="oidc_am_username" name="oidc_am_username" type="text" value = "{conf_am.oidc_am_username}">
                     </div>
-
-                    <div class="form-group">
-                        <label for="saml_am_email"><strong>Email</strong><span class="premiumMessage"> * </span></label>
-                        <input class="form-control"  disabled id="saml_am_email" name="saml_am_email" type="text" value="NameID">
-                    </div>
-
+                    &nbsp;
                     <div disabled >
+                        <p class="premiumMessage" >Advanced attribute mapping is available in premium version only.</p>
 
                         <div class="form-group">
-                            <label for="saml_am_fname"><b>First Name</b><span class="premiumMessage"> * </span></label>
-                            <input class="form-control" style="color: red" disabled id="saml_am_fname" name="saml_am_fname" type="text" >
+                            <label for="oidc_am_email"><strong>Email</strong><span class="premiumMessage"> * </span></label>
+                            <input class="form-control" disabled id="oidc_am_email" name="oidc_am_email" type="text" value="">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="oidc_am_fname"><b>First Name</b><span class="premiumMessage"> * </span></label>
+                            <input class="form-control" disabled id="oidc_am_fname" name="oidc_am_fname" type="text" >
                         </div>
                         <div class="form-group">
-                            <label for="saml_am_lname"><b>Last Name</b><span class="premiumMessage"> * </span></label>
-                            <input class="form-control" style="color: red" disabled id="saml_am_lname" name="saml_am_lname" type="text" >
+                            <label for="oidc_am_lname"><b>Last Name</b><span class="premiumMessage"> * </span></label>
+                            <input class="form-control" disabled id="oidc_am_lname" name="oidc_am_lname" type="text" >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="oidc_am_group"><strong>Group/Role</strong><span class="premiumMessage"> * </span></label>
+                            <input class="form-control"  disabled id="oidc_am_group" name="oidc_am_group" type="text" value="">
                         </div>
 
                     </div>
@@ -423,12 +350,10 @@
                 <div class="form-inline">
                 </div>
                 <br/>
-                <button type="submit" disabled class="btn btn-primary" name="custom_attrs" id="custom_attrs" onClick="jQuery('#attrs_form').submit();">Save Attribute Mapping</button>
+                <button type="submit" {log} class="btn btn-primary" name="custom_attrs" id="custom_attrs" onClick="jQuery('#attrs_form').submit();">Save Attribute Mapping</button>
                 <!--</div>-->
             </form>
         </div>
-
-        <p id="saml_message"></p>
 
         <!--   ACCOUNT TAB-->
         <div id="Account" style="margin-left: 20px" class="tabcontent" >
@@ -445,9 +370,10 @@
                     <h4 style=" color: #545454;"><strong>Why should I register?</strong></h4>
 
                     <div style="background: aliceblue; padding: 10px 10px 10px 10px; border-radius: 10px; color: #545454;">
-                        You should register so that in case you need help, we can help you with step by step
-                        instructions. We support all known IdPs - ADFS, Okta, Salesforce, Shibboleth,
-                        SimpleSAMLphp, OpenAM, Centrify, Ping, RSA, IBM, Oracle, OneLogin, Bitium, WSO2 etc.
+                        You should login/register so that in case you need help, we can help you with step by step
+                        instructions.
+<!--                        We support all known IdPs - ADFS, Okta, Salesforce, Shibboleth,-->
+<!--                        SimpleSAMLphp, OpenAM, Centrify, Ping, RSA, IBM, Oracle, OneLogin, Bitium, WSO2 etc.-->
                         <b>You will also need a miniOrange account to upgrade to the premium version of this extension.</b>
                         We do not store any information except the email that you will use to register with us.
                     </div>
@@ -648,6 +574,9 @@
         console.log("Session in end : ".session);
         document.getElementById(session).className  += " active";
 
+        $("input[name='grant_type']").click(function() {
+            $("input[name='grant_type']").not(this).prop('checked', false);
+        });
     });
 
     function openTab(evt, cityName) {
@@ -731,23 +660,23 @@
 
 <script>
 
-    var getid = document.getElementsByName("attribute_name1");
-
-    function myFunction() {
-        getid.setAttribute("disabled", false);
-    }
-
-    $.ajax({
-        url: "BesamlController.php",
-        type : "POST",
-        data : $myjson,
-        crossDomain: true,
-        dataType : "json",
-        contentType : "application/json; charset=utf-8",
-        success: function(results){
-            console.log(results);
-        }
-    });
+    // var getid = document.getElementsByName("attribute_name1");
+    //
+    // function myFunction() {
+    //     getid.setAttribute("disabled", false);
+    // }
+    //
+    // $.ajax({
+    //     url: "BesamlController.php",
+    //     type : "POST",
+    //     data : $myjson,
+    //     crossDomain: true,
+    //     dataType : "json",
+    //     contentType : "application/json; charset=utf-8",
+    //     success: function(results){
+    //         console.log(results);
+    //     }
+    // });
 
 </script>
 

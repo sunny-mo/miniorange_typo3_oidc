@@ -21,7 +21,7 @@ $EM_CONF[$_EXTKEY] = [
 		'autoload' => [
 				'psr-4' => [
 						'Miniorange\\MiniorangeOidc\\' => 'Classes',
-						"MiniOrange\\Helper\\" => "Helper"
+						'Miniorange\\Helper\\' => 'Helper',
 				]
 		],
 //    "autoload-dev"=> [

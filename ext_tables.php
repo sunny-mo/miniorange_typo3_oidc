@@ -31,7 +31,6 @@ call_user_func(
                 '', // Position
                 [
                     'Beoidc' => 'request',
-
                 ],
                 [
                     'access' => 'user,group',
@@ -39,7 +38,6 @@ call_user_func(
                     'labels' => 'LLL:EXT:miniorange_oidc/Resources/Private/Language/locallang_bekey.xlf',
                 ]
             );
-
         }
 
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('miniorange_oidc', 'Configuration/TypoScript', '');
