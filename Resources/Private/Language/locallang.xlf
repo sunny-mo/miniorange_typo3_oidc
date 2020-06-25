@@ -4,15 +4,12 @@
 		<header/>
 		<body>
 			<trans-unit id="tx_miniorangeoidc_domain_model_feoidc">
-				<source>Fesaml</source>
+				<source>Feoidc</source>
 			</trans-unit>
 			<trans-unit id="tx_miniorangeoidc_domain_model_beoidc">
-				<source>Besaml</source>
+				<source>Beoidc</source>
 			</trans-unit>
 			<trans-unit id="tx_miniorangeoidc_domain_model_response">
-				<source>Response</source>
-			</trans-unit>
-			<trans-unit id="tx_miniorangeoidc_domain_model_logout">
 				<source>Response</source>
 			</trans-unit>
 		</body>

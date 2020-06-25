@@ -33,6 +33,10 @@
             height: 100%;
         }
 
+        .btn{
+            background: #f05c00;
+        }
+
         .button {
             font-size: 28px;
             min-width: 200px;
@@ -41,15 +45,15 @@
 
             display: inline-block;
             border-radius: 2px;
-            background-color: #f2f2f2;
+            /*background-color: #f2f2f2;*/
             border: none;
+            background-color: #f05c00;
             color: white;
             text-shadow: 2px 2px 4px #0f0e0e;
             font-weight: bold;
             text-align: center;
             transition: all 0.5s;
             cursor: pointer;
-
         }
 
         .button span {
@@ -87,6 +91,7 @@
             border: 1px solid #ccc;
             /*background-color: #f1f1f1;*/
             background: #002b36;
+            /*background: #f05c00;*/
             box-shadow: 2px 2px 2px darkgrey;
         }
 
@@ -105,12 +110,14 @@
         /* Change background color of buttons on hover */
         .tab button:hover {
             /*background-color: #969cdb;*/
-            background: #afcee9;
+            /*background: #afcee9;*/
+            background: #e8d658;
         }
 
         /* Create an active/current tablink class */
         .tab button.active {
-            background-color: #428bca; ;
+            /*background-color: #428bca;*/
+            background-color: #f05c00;
             color: white;
             font-weight: bolder;
         }
@@ -125,11 +132,11 @@
     </style>
 
     <style>
-
         .profileTable{
-            width: 95%;
-            background: #f1f1f1;
-            border: solid 2px black;
+            width: 100%;
+            /*background: #f1f1f1;*/
+            background: #fcf4bb;
+            border: solid 2px orangered;
         }
 
         .profileTable tbody td {
@@ -179,19 +186,15 @@
             text-shadow: 2px 2px 4px black;
             border-radius: 5px;
         }
-
         .premiumMessage{
             color: red;
             font-weight: bold;
             font-size: 14px;
         }
-
         .premiumBox{
             font-weight: bold;
             background: #ffe6e6;
         }
-
-
     </style>
 
 </head>
@@ -200,12 +203,11 @@
 
 <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
 
-
 <div class="tab">
-    <button class="tablinks button" onclick="removeFlashMessage(); openTab(event,'Account')">Account</button>
-    <button class="tablinks button" onclick="removeFlashMessage(); openTab(event, 'OpenID_Connect')">Configure OpenId Connect</button>
-    <button class="tablinks button" onclick="removeFlashMessage(); openTab(event, 'Attribute_Mapping')">Attribute Mapping</button>
-    <button class="tablinks button" onclick="removeFlashMessage(); openTab(event,'Support')">Support</button>
+    <button id="account_tab_btn" class="tablinks button" onclick="removeFlashMessage(); openTab(event,'Account')">Account</button>
+    <button id="oidc_tab_btn" class="tablinks button" onclick="removeFlashMessage(); openTab(event, 'OIDC_Settings')">OpenID Connect Client</button>
+    <button id="am_tab_btn" class="tablinks button" onclick="removeFlashMessage(); openTab(event, 'Attribute_Mapping')">Attribute Mapping</button>
+    <button id="support_tab_btn" class="tablinks button" onclick="removeFlashMessage(); openTab(event,'Support')">Support</button>
 </div>
 
 <input hidden name="taby" id="taby" value="{tab}">
@@ -215,15 +217,20 @@
     <div id="leftContainer">
 
         <!--   Configure OpenID Connect tab-->
-        <div id="OpenID_Connect" class="tabcontent"  >
+        <div id="OIDC_Settings" class="tabcontent"  >
             <h3><strong>Configure OpenID Connect Client </strong></h3>  <p class="premiumMessage" style={nolog} >  [Please login to configure settings.]</p>
             <hr>
             <div class="tile" >
                 <form method="POST" action="" id="oidc_form" >
                     <input type="hidden" name="option" value="oidc_settings">
                     <div class="form-group" >
-                        <label for="app_name"><b>Application Name</b><span class="premiumMessage"> * </span></label>
-                        <input class="form-control" {log} name="app_name" id="app_name" type="text" required value="{conf.app_name}">
+                        <label for="app_type"><b>Application type</b><span class="premiumMessage"> * </span></label>
+
+                        <select class="form-control" name="app_type" id="app_type" required value="{conf.app_type}">
+                            <option value="OpenID Connect">OpenID Connect</option>
+                            <option value="OAuth">OAuth</option>
+                        </select>
+<!--                        <input class="form-control" disabled name="app_type" id="app_type" type="text" required value="{conf.app_type}">-->
                     </div>
 
                     <div class="form-group">
@@ -233,19 +240,19 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="app_display_name"><b>App Display Name</b><span class="premiumMessage"> * </span></label>
-                        <input class="form-control" {log} name="app_display_name" id="app_display_name" type="text"
-                               required value="{conf.app_display_name}">
+                        <label for="app_name"><b>Application Name</b><span class="premiumMessage"> * </span></label>
+                        <input class="form-control" {log} name="app_name" id="app_name" type="text"
+                               required value="{conf.app_name}">
                     </div>
 
                     <div class="form-group">
                         <label for="client_id"><b>Client ID</b><span class="premiumMessage"> * </span></label>
-                        <input class="form-control" {log} name="client_id" id="client_id" type="text" value="{conf.client_id}">
+                        <input class="form-control" {log} name="client_id" id="client_id" type="text" required value="{conf.client_id}">
                     </div>
 
                     <div class="form-group">
                         <label for="client_secret"><b>Client Secret</b><span class="premiumMessage"> * </span></label>
-                        <input class="form-control" {log} name="client_secret" id="client_secret" type="password" value="{conf.client_secret}">
+                        <input class="form-control" {log} name="client_secret" id="client_secret" type="password" required value="{conf.client_secret}">
                     </div>
 
                     <div class="form-group">
@@ -255,25 +262,43 @@
 
                     <div class="form-group">
                         <label for="auth_endpoint"><b>Authorization Endpoint</b><span class="premiumMessage"> * </span></label>
-                        <input class="form-control" {log} name="auth_endpoint" id="auth_endpoint" type="text" value="{conf.auth_endpoint}">
+                        <input class="form-control" {log} name="auth_endpoint" id="auth_endpoint" type="text" required value="{conf.auth_endpoint}">
                     </div>
 
                     <div class="form-group">
                         <label for="token_endpoint"><b>Access Token Endpoint</b><span class="premiumMessage"> * </span></label>
-                        <input class="form-control" {log} name="token_endpoint" id="token_endpoint" type="text" value="{conf.token_endpoint}">
+                        <input class="form-control" {log} name="token_endpoint" id="token_endpoint" type="text" required value="{conf.token_endpoint}">
                     </div>
 
                     <div class="form-group">
-                        <label for="user_info_endpoint"><b>User Info Endpoint</b><span class="premiumMessage"> * </span></label>
+                        <label for="user_info_endpoint"><b>User Info Endpoint</b></label>
                         <input class="form-control" {log} name="user_info_endpoint" id="user_info_endpoint" type="text" value="{conf.user_info_endpoint}">
                     </div>
 
                     <div class="animated-checkbox">
-                        <input type="checkbox" {log}  id="set_header_credentials"  name="set_header_credentials" >
+
+                        <f:if condition="{conf.set_header_credentials} == 'on' ">
+                            <f:then>
+                                <input type="checkbox" checked id="set_header_credentials"  name="set_header_credentials" >
+                            </f:then>
+                            <f:else>
+                                <input type="checkbox" id="set_body_credentials"  name="set_body_credentials" >
+                            </f:else>
+                        </f:if>
                         <label> <span class="label-text">Set client credentials in Header</span></label>
-                        <input type="checkbox" {log}  id="set_body_credentials"  name="set_body_credentials" >
+
+                        <f:if condition="{conf.set_body_credentials} = 'on'">
+                            <f:then>
+                                <input type="checkbox" checked id="set_body_credentials"  name="set_body_credentials" >
+                            </f:then>
+                            <f:else>
+                                <input type="checkbox" id="set_body_credentials"  name="set_body_credentials" >
+                            </f:else>
+                        </f:if>
                         <label> <span class="label-text">Set client credentials in Body</span></label>
+
                     </div>
+
                     &nbsp
                     <div class="tile-footer">
                         <button class="btn btn-primary" type="button" {log} name="submit_saml_form" id="submit_saml_form" style="margin-right:10px;" onClick="jQuery('#oidc_form').submit();">Save settings</button>
@@ -290,7 +315,7 @@
         &nbsp;
         <div disabled >
             <div class="animated-checkbox">
-                <input type="checkbox" disabled id="auth_code_grant" name="grant_type" value="auth_code_grant" checked="true" >
+                <input type="checkbox" disabled id="auth_code_grant" name="grant_type" value="auth_code_grant" checked >
                 <label> <span class="label-text">Authorization Code Grant</span>  [Default]</label>
             </div>
             <div class="animated-checkbox">
@@ -319,7 +344,7 @@
                 <div class="tile">
                     <div class="form-group">
                         <label for="oidc_am_username"><strong>Username</strong><span class="premiumMessage"> * </span></label>
-                        <input class="form-control" {log} id="oidc_am_username" name="oidc_am_username" type="text" value = "{conf_am.oidc_am_username}">
+                        <input class="form-control" {log} id="oidc_am_username" name="oidc_am_username" type="text" value="{am_username}">
                     </div>
                     &nbsp;
                     <div disabled >
@@ -359,9 +384,9 @@
         <div id="Account" style="margin-left: 20px" class="tabcontent" >
 
             <!--    IF USER NOT LOGGED IN -->
-            <f:if condition="{0: status} == {0: 'not_logged'}">
+            <f:if condition="{0: status} == {0:'not_logged'} ">
                 <form name="account" method="post" id="account_form">
-                    <input type="hidden" name="option" value="mo_saml_verify_customer"/>
+                    <input type="hidden" name="option" value="mo_verify_customer"/>
 
                     <div id="toggle1" class="panel_toggle">
                         <h3><strong>Register/Login with Miniorange</strong></h3>
@@ -537,17 +562,9 @@
         var session = document.getElementById('taby').value;
         console.log("Session in start : in ready(): "+session);
 
-        // document.querySelectorAll('.typo3-messages').forEach(function(a){
-        //     a.remove();
-        // });
-
-        if (session == "Service_Provider")
+        if (session == "OIDC_Settings")
         {
-            openTab(event, 'Service_Provider');
-        }
-
-        if (session == "Identity_Provider"){
-            openTab(event, 'Identity_Provider');
+            openTab(event, 'OIDC_Settings');
         }
 
         if (session == "Support"){
@@ -560,10 +577,10 @@
             openTab(event, 'Attribute_Mapping');
         }
 
-        if(session == "" || session == "Account" || session===null)
+        if(session == "" || session == "Account" || session==null)
         {
-            // document.getElementById('Account').style.display = "block";
             openTab(event, 'Account');
+            $("#account_tab_btn").addClass("active");
             session = "Account";
         }
 
@@ -579,7 +596,7 @@
         });
     });
 
-    function openTab(evt, cityName) {
+    function openTab(evt, activeTab) {
 
         console.log("inside openTab ".cityname);
         document.getElementById("leftContainer").classList.add("showElement");
@@ -597,11 +614,11 @@
             tablinks[i].className = tablinks[i].className.replace(" active", "");
         }
 
-        if(cityName!=="Support"){
-            document.getElementById(cityName).style.display = "block";
+        if(activeTab!=="Support"){
+            document.getElementById(activeTab).style.display = "block";
             document.getElementById("Support").style.display = "block";
         }else{
-            document.getElementById(cityName).style.display = "block";
+            document.getElementById(activeTab).style.display = "block";
             document.getElementById("leftContainer").classList.replace("showElement","hideElement");
         }
 
@@ -610,7 +627,6 @@
     }
 
     function removeFlashMessage(){
-
         document.querySelectorAll('.typo3-messages').forEach(function(a){
             a.remove();
             console.log("remove typo3 messages.");
@@ -625,36 +641,6 @@
             document.getElementById('confirmPasswordDiv').style.display = "block";
         }
     }
-
-    // function onIdpSettingsSubmit( Event ){
-    //     console.log("saml form submitted");
-    //     if( (document.getElementById("idp_name").value === "") || (document.getElementById("x509_certificate").value !== "")
-    //         || (document.getElementById("idp_entity_id").value !== "") || (document.getElementById("saml_login_url").value !== "") ){
-    //
-    //         Event.preventDefault();
-    //         window.alert("Please fill all the fields.");
-    //     }
-    // }
-
-    // $("#saml_form").submit(function(e){
-    //     console.log("saml form submitted");
-    //     if( ($("#idp_name").val() === "") || ($("#x509_certificate").val() !== "")
-    //         || ($("#idp_entity_id").val() !== "") || ($("#saml_login_url").val() !== "") ){
-    //         e.preventDefault();
-    //         window.alert("Please fill all the fields.");
-    //     }
-    // })
-
-    // function onSpSettingsSubmit(Event){
-    //     console.log("sp settings form submitted");
-    //     if( (document.getElementById("fesaml").value === "") || (document.getElementById("response").value !== "")
-    //         || (document.getElementById("sp_entity_id").value !== "") || (document.getElementById("acs_url").value !== "")
-    //         || (document.getElementById("site_base_url").value !== "")){
-    //
-    //         Event.preventDefault();
-    //         window.alert("Please fill all the fields.");
-    //     }
-    // }
 
 </script>
 

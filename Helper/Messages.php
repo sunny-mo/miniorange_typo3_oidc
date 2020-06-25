@@ -1,7 +1,7 @@
 <?php
 
 
-namespace MiniOrange\Helper;
+namespace Miniorange\Helper;
 
 class Messages
 {

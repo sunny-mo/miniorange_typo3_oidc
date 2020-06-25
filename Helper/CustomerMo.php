@@ -20,7 +20,7 @@ class CustomerMo {
         $password = $password;
         $fields = array (
             'companyName' => $_SERVER['SERVER_NAME'],
-            'areaOfInterest' => 'TYPO3 SAML Extension',
+            'areaOfInterest' => Constants::AREA_OF_INTEREST,
             'email' => $this->email,
             'password' => $password
         );
@@ -36,8 +36,6 @@ class CustomerMo {
         $response = curl_exec( $ch );
         error_log("create_customer response : ".$response);
         if (curl_errno ( $ch )) {
-            // if($this->is_connection_issue(curl_errno($ch)))
-            //     wp_die("There was an issue connection to Internet. Check if your firewall is allowing outbound connection to port 443.<br><br>In case you are using proxy, go to proxy tab in plugin and configure proxy settings.");
             echo 'Request Error:' . curl_error ( $ch );
             exit ();
         }
@@ -45,6 +43,7 @@ class CustomerMo {
         curl_close ( $ch );
         return $response;
     }
+
 //    function create_customer(){
 //        $url = \MiniOrange\Helper\Constants::HOSTNAME . '/moas/rest/customer/add';
 //        $this->email 		= get_option('mo_oauth_admin_email');
@@ -93,7 +92,7 @@ class CustomerMo {
 
         sendMail:
         $url = Constants::HOSTNAME.'/moas/api/notify/send';
-        $subject = "miniOrange TYPO3 SAML SP Plugin Query";
+        $subject = "miniOrange Typo3 OpenID Connect Query";
 
         $customerKey = MoUtilities::fetch_cust(Constants::CUSTOMER_KEY);
         $apiKey      = MoUtilities::fetch_cust(Constants::CUSTOMER_API_KEY);;
@@ -154,53 +153,6 @@ class CustomerMo {
         return $response;
 
     }
-//    function submit_contact_us( $email, $phone, $query, $send_config = true ) {
-//        global $current_user;
-//        wp_get_current_user();
-//        $mo_openidconnect = new mo_openidconnect();
-//        $plugin_config          = $mo_openidconnect->export_plugin_config( true );
-//        $config_to_send         = json_encode( $plugin_config, JSON_UNESCAPED_SLASHES );
-//        $plugin_version         = get_plugin_data( __DIR__ . DIRECTORY_SEPARATOR . 'mo_openidconnect_settings.php' )['Version'];
-//
-//        $query = '[WP OpenIDConnect Client ' . $plugin_version . '] ' . $query;
-//        if( $send_config ) {
-//            $query .= "<br><br>Config String:<br><pre style=\"border:1px solid #444;padding:10px;\"><code>" . $config_to_send . "</code></pre>";
-//        }
-//        $fields = array(
-//            'firstName'			=> $current_user->user_firstname,
-//            'lastName'	 		=> $current_user->user_lastname,
-//            'company' 			=> $_SERVER['SERVER_NAME'],
-//            'email' 			=> $email,
-//            'ccEmail' 		    => 'oauthsupport@xecurify.com',
-//            'phone'				=> $phone,
-//            'query'				=> $query
-//        );
-//        $field_string = json_encode( $fields );
-//
-//        $url = get_option('host_name') . '/moas/rest/customer/contact-us';
-//
-//        $headers = array( 'Content-Type' => 'application/json', 'charset' => 'UTF - 8', 'Authorization' => 'Basic' );
-//        $args = array(
-//            'method' =>'POST',
-//            'body' => $field_string,
-//            'timeout' => '5',
-//            'redirection' => '5',
-//            'httpversion' => '1.0',
-//            'blocking' => true,
-//            'headers' => $headers,
-//
-//        );
-//
-//        $response = wp_remote_post( $url, $args );
-//
-//        if ( is_wp_error( $response ) ) {
-//            $error_message = $response->get_error_message();
-//            echo "Something went wrong: $error_message";
-//            exit();
-//        }
-//
-//        return true;
-//    }
 
     function check_customer($email,$password) {
         $url = Constants::HOSTNAME."/moas/rest/customer/check-if-exists";
@@ -227,37 +179,6 @@ class CustomerMo {
 
         return $response;
     }
-//    function check_customer() {
-//        $url 	= Constants::HOSTNAME . "/moas/rest/customer/check-if-exists";
-//        $ch 	= curl_init( $url );
-//        $email 	= get_option("mo_oauth_admin_email");
-//
-//        $fields = array(
-//            'email' 	=> $email,
-//        );
-//        $field_string = json_encode( $fields );
-//        $headers = array( 'Content-Type' => 'application/json', 'charset' => 'UTF - 8', 'Authorization' => 'Basic' );
-//        $args = array(
-//            'method' =>'POST',
-//            'body' => $field_string,
-//            'timeout' => '5',
-//            'redirection' => '5',
-//            'httpversion' => '1.0',
-//            'blocking' => true,
-//            'headers' => $headers,
-//
-//        );
-//
-//        $response = wp_remote_post( $url, $args );
-//
-//        if ( is_wp_error( $response ) ) {
-//            $error_message = $response->get_error_message();
-//            echo "Something went wrong: $error_message";
-//            exit();
-//        }
-//        return $response;
-////        return wp_remote_retrieve_body($response);
-//    }
 
     function get_customer_key($email,$password) {
         $url = Constants::HOSTNAME."/moas/rest/customer/key";
@@ -274,7 +195,6 @@ class CustomerMo {
             'Authorization: Basic'
         ) );
 
-
         $response = curl_exec ( $ch );
         error_log("get_customer_key response : ".$response);
 
@@ -286,42 +206,8 @@ class CustomerMo {
 
         return $response;
     }
-/*    function get_customer_key() {
-        $url 	= Constants::HOSTNAME. "/moas/rest/customer/key";
-        $ch 	= curl_init( $url );
-        $email 	= get_option("mo_oauth_admin_email");
 
-        $password 			= get_option("password");
-
-        $fields = array(
-            'email' 	=> $email,
-            'password' 	=> $password
-        );
-        $field_string = json_encode( $fields );
-
-        $headers = array( 'Content-Type' => 'application/json', 'charset' => 'UTF - 8', 'Authorization' => 'Basic' );
-        $args = array(
-            'method' =>'POST',
-            'body' => $field_string,
-            'timeout' => '5',
-            'redirection' => '5',
-            'httpversion' => '1.0',
-            'blocking' => true,
-            'headers' => $headers,
-
-        );
-
-        $response = wp_remote_post( $url, $args );
-        if ( is_wp_error( $response ) ) {
-            $error_message = $response->get_error_message();
-            echo "Something went wrong: $error_message";
-            exit();
-        }
-
-        return wp_remote_retrieve_body($response);
-    }*/
-
-    function saml_get_current_domain() {
+    function mo_get_current_domain() {
         $http_host = $_SERVER['HTTP_HOST'];
         if(substr($http_host, -1) == '/') {
             $http_host = substr($http_host, 0, -1);

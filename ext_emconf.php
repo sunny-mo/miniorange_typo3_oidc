@@ -24,9 +24,5 @@ $EM_CONF[$_EXTKEY] = [
 						'Miniorange\\Helper\\' => 'Helper',
 				]
 		],
-//    "autoload-dev"=> [
-//				"psr-4"=> [
-//					"Miniorange\\SamlSpPremium\\Tests\\"=> "Tests"
-//					],
-//    ],
+
 ];

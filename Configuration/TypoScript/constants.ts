@@ -1,0 +1,45 @@
+
+plugin.tx_miniorangeoidc_fekey {
+    view {
+        # cat=plugin.tx_miniorangeoidc_fekey/file; type=string; label=Path; to; template; root (FE);
+        templateRootPath = EXT;:miniorange_oidc/Resources/Private/Templates/;
+        # cat=plugin.tx_miniorangeoidc_fekey/file; type=string; label=Path; to; template; partials (FE);
+        partialRootPath = EXT;:miniorange_oidc/Resources/Private/Partials/;
+        # cat=plugin.tx_miniorangeoidc_fekey/file; type=string; label=Path; to; template; layouts (FE);
+        layoutRootPath = EXT;:miniorange_oidc/Resources/Private/Layouts/
+    }
+    persistence; {
+        # cat=plugin.tx_miniorangeoidc_fekey;//a; type=string; label=Default storage PID
+        storagePid =
+    }
+}
+
+plugin.tx_miniorangeoidc_responsekey; {
+    view; {
+        # cat=plugin.tx_miniorangeoidc_responsekey/file; type=string; label=Path; to; template; root (FE);
+        templateRootPath = EXT;:miniorange_oidc/Resources/Private/Templates/;
+        # cat=plugin.tx_miniorangeoidc_responsekey/file; type=string; label=Path; to; template; partials (FE);
+        partialRootPath = EXT;:miniorange_oidc/Resources/Private/Partials/;
+        # cat=plugin.tx_miniorangeoidc_responsekey/file; type=string; label=Path; to; template; layouts (FE);
+        layoutRootPath = EXT;:miniorange_oidc/Resources/Private/Layouts/
+    }
+    persistence; {
+        # cat=plugin.tx_miniorangeoidc_responsekey;//a; type=string; label=Default storage PID
+        storagePid =
+    }
+}
+
+module.tx_miniorangeoidc_bekey; {
+    view; {
+        # cat=module.tx_miniorangeoidc_bekey/file; type=string; label=Path; to; template; root (BE);
+        templateRootPath = EXT;:miniorange_oidc/Resources/Private/Backend/Templates/;
+        # cat=module.tx_miniorangeoidc_bekey/file; type=string; label=Path; to; template; partials (BE);
+        partialRootPath = EXT;:miniorange_oidc/Resources/Private/Backend/Partials/;
+        # cat=module.tx_miniorangeoidc_bekey/file; type=string; label=Path; to; template; layouts (BE);
+        layoutRootPath = EXT;:miniorange_oidc/Resources/Private/Backend/Layouts/
+    }
+    persistence; {
+        # cat=module.tx_miniorangeoidc_bekey;//a; type=string; label=Default storage PID
+        storagePid =
+    }
+}

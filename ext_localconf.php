@@ -4,31 +4,30 @@ defined('TYPO3_MODE') || die('Access denied.');
 call_user_func(
     function()
     {
-
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-            'Miniorange.Oidc',
+            'Miniorange.MiniorangeOidc',
             'Feoidc',
-            [
-                'Feoidc' => 'print'
-            ],
+            array(
+                'Feoidc' => 'sendRequest'
+            ),
             // non-cacheable actions
-            [
+            array(
                 'Feoidc' => 'control'
-            ]
+            )
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-            'Miniorange.Oidc',
+            'Miniorange.MiniorangeOidc',
             'Response',
-            [
+            array(
                 'Response' => 'check'
-            ],
+            ),
             // non-cacheable actions
-            [
+            array(
                 'Feoidc' => '',
                 'Beoidc' => '',
                 'Response' => ''
-            ]
+            )
         );
         
         // wizards
@@ -54,15 +53,6 @@ call_user_func(
                             list_type = Response
                         }
                     }
-                     Logoutkey {
-                        iconIdentifier = miniorange_oidc-plugin-logout
-                        title = LLL:EXT:miniorange_oidc/Resources/Private/Language/locallang_db.xlf:tx_MiniorangeOidc_logout.name
-                        description = LLL:EXT:miniorange_oidc/Resources/Private/Language/locallang_db.xlf:tx_MiniorangeOidc_logout.description
-                        tt_content_defValues {
-                            CType = list
-                            list_type = Logout
-                        }
-                    }
                 }
                 show = *
             }
@@ -80,11 +70,5 @@ call_user_func(
             \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
             ['source' => 'EXT:miniorange_oidc/Resources/Public/Icons/miniorange.png']
         );
-        $iconRegistry->registerIcon(
-            'miniorange_oidc-plugin-logout',
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:miniorange_oidc/Resources/Public/Icons/miniorange.png']
-        );
-
     }
 );

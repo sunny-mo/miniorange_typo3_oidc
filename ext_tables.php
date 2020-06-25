@@ -17,12 +17,6 @@ call_user_func(
             'Response'
         );
 
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-            'Miniorange.MiniorangeOidc',
-            'Logout',
-            'Logout'
-        );
-
         if (TYPO3_MODE === 'BE') {
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
                 'Miniorange.MiniorangeOidc',
@@ -50,9 +44,6 @@ call_user_func(
 
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_miniorangeoidc_domain_model_response', 'EXT:miniorange_oidc/Resources/Private/Language/locallang_csh_tx_miniorangeoidc_domain_model_response.xlf');
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_miniorangeoidc_domain_model_response');
-
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_miniorangeoidc_domain_model_logout', 'EXT:miniorange_oidc/Resources/Private/Language/locallang_csh_tx_miniorangeoidc_domain_model_logout.xlf');
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_miniorangeoidc_domain_model_logout');
 
     }
 );

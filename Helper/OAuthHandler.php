@@ -1,6 +1,6 @@
 <?php
 
-namespace MiniOrange\Helper;
+namespace Miniorange\Helper;
 
 class OAuthHandler {
 
@@ -19,60 +19,112 @@ class OAuthHandler {
 
     function getToken($tokenendpoint, $grant_type, $clientid, $clientsecret, $code, $redirect_url, $send_headers, $send_body){
 
-        $body = array(
-            'grant_type'    => $grant_type,
-            'code'          => $code,
-            'client_id'     => $clientid,
-            'client_secret' => $clientsecret,
-            'redirect_uri'  => $redirect_url,
-        );
-        $headers = array(
-            'Accept'  => 'application/json',
-            'charset'       => 'UTF - 8',
-            'Authorization' => 'Basic ' . base64_encode( $clientid . ':' . $clientsecret ),
-            'Content-Type' => 'application/x-www-form-urlencoded',
-        );
-        if($send_headers && !$send_body){
-            unset( $body['client_id'] );
-            unset( $body['client_secret'] );
+//        $ch = curl_init($tokenendpoint);
+//        curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
+//        curl_setopt( $ch, CURLOPT_ENCODING, "" );
+//        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+//        curl_setopt( $ch, CURLOPT_AUTOREFERER, true );
+//        curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
+//        curl_setopt( $ch, CURLOPT_MAXREDIRS, 10 );
+//        curl_setopt( $ch, CURLOPT_POST, true);
+
+        $ch = $this->prepareCurlOptions($tokenendpoint);
+
+        if($send_headers && !$send_body) {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Authorization: Basic ' . base64_encode( $clientid . ":" . $clientsecret ),
+                'Accept: application/json'
+            ));
+            curl_setopt( $ch, CURLOPT_POSTFIELDS, 'redirect_uri='.urlencode($redirect_url).'&grant_type='.$grant_type.'&code='.$code);
+
         }else if(!$send_headers && $send_body){
-            unset( $headers['Authorization'] );
+
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Accept: application/json'
+            ));
+            curl_setopt( $ch, CURLOPT_POSTFIELDS, 'redirect_uri='.urlencode($redirect_url).'&grant_type='.$grant_type.'&client_id='.$clientid.'&client_secret='.$clientsecret.'&code='.$code);
+        }else {
+
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Authorization: Basic ' . base64_encode( $clientid . ":" . $clientsecret ),
+                'Accept: application/json'
+            ));
+            curl_setopt( $ch, CURLOPT_POSTFIELDS, 'redirect_uri='.urlencode($redirect_url).'&grant_type='.$grant_type.'&client_id='.$clientid.'&client_secret='.$clientsecret.'&code='.$code);
         }
 
-        $response   = wp_remote_post( $tokenendpoint, array(
-            'method'      => 'POST',
-            'timeout'     => 45,
-            'redirection' => 5,
-            'httpversion' => '1.0',
-            'blocking'    => true,
-            'headers'     => $headers,
-            'body'        => $body,
-            'cookies'     => array(),
-            'sslverify'   => false
-        ) );
-        if ( is_wp_error( $response ) ) {
-            wp_die( $response );
+        $response = curl_exec($ch);
+
+        if(curl_error($ch)){
+            echo "<b>Response : </b><br>";print_r($response);echo "<br><br>";
+            exit( curl_error($ch) );
         }
-        $response =  $response['body'] ;
 
         if(!is_array(json_decode($response, true))){
             echo "<b>Response : </b><br>";print_r($response);echo "<br><br>";
             exit("Invalid response received.");
         }
 
-        $content = json_decode($response,true);
-        if(isset($content["error_description"])){
-            exit($content["error_description"]);
-        } else if(isset($content["error"])){
-            exit($content["error"]);
-        }
+        $response = json_decode($response,true);
 
+        if (isset($response["error"])) {
+            if (is_array($response["error"])) {
+                $response["error"] = $response["error"]["message"];
+            }
+            exit($response["error"]);
+        }
+        else if(isset($response["error_description"])){
+            exit($response["error_description"]);
+        }
+//        else if(isset($response["access_token"])) {
+//            $access_token = $response["access_token"];
+//        } else {
+//            exit('Invalid response received from OAuth Provider. Contact your administrator for more details.\n\m'.$response);
+//        }
         return $response;
+
+//        $body = array(
+//            'grant_type'    => $grant_type,
+//            'code'          => $code,
+//            'client_id'     => $clientid,
+//            'client_secret' => $clientsecret,
+//            'redirect_uri'  => $redirect_url,
+//        );
+//        $field_string = json_encode ( $body );
+//
+//        $headers = array(
+//            'Accept'  => 'application/json',
+//            'charset'       => 'UTF - 8',
+//            'Authorization' => 'Basic ' . base64_encode( $clientid . ':' . $clientsecret ),
+//            'Content-Type' => 'application/x-www-form-urlencoded',
+//        );
+//
+//        if($send_headers && !$send_body){
+//            unset( $body['client_id'] );
+//            unset( $body['client_secret'] );
+//        }else if(!$send_headers && $send_body){
+//            unset( $headers['Authorization'] );
+//        }
+//
+//        $ch = $this->prepareCurlOptions($tokenendpoint, $field_string, $headers);
+//
+//        $response = curl_exec ($ch);
+//
+//        error_log("get_token response : ".$response);
+//
+//        if (curl_errno ( $ch )) {
+//            echo 'Error in sending curl Request';
+//            exit ();
+//        }
+//
+//        curl_close ( $ch );
+//        return $response;
+
     }
 
     function getIdToken($tokenendpoint, $grant_type, $clientid, $clientsecret, $code, $redirect_url, $send_headers, $send_body){
-        $response = $this->getToken ($tokenendpoint, $grant_type, $clientid, $clientsecret, $code, $redirect_url, $send_headers, $send_body);
-        $content = json_decode($response,true);
+        $content = $this->getToken ($tokenendpoint, $grant_type, $clientid, $clientsecret, $code, $redirect_url, $send_headers, $send_body);
+
+//        $content = json_decode($response,true);
         if(isset($content["id_token"]) || isset($content["access_token"])) {
             return $content;
             exit;
@@ -152,6 +204,20 @@ class OAuthHandler {
         return $content;
     }
 
+    function prepareCurlOptions($url){
+        $ch = curl_init($url);
+        curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
+        curl_setopt( $ch, CURLOPT_ENCODING, "" );
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+        curl_setopt( $ch, CURLOPT_AUTOREFERER, true );
+        curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
+        curl_setopt( $ch, CURLOPT_MAXREDIRS, 10 );
+        curl_setopt( $ch, CURLOPT_POST, true);
+//        curl_setopt ( $ch, CURLOPT_SSL_VERIFYHOST, false );
+        curl_setopt($ch, CURLOPT_PROXY, '127.0.0.1:8888');
+
+        return $ch;
+    }
+
 }
 
-?>
