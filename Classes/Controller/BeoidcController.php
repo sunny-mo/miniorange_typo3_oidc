@@ -16,6 +16,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Tstemplate\Controller\TypoScriptTemplateModuleController;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+
 use Miniorange\Helper\Utilities;
 /**
  *BeoidcController
@@ -274,7 +275,6 @@ class BeoidcController extends ActionController
                 Utilities::showErrorFlashMessage('This is not a valid email. Please enter a valid email.');
             }
              $_SESSION['flag']='unset';
-
         }
     }
 
@@ -375,6 +375,7 @@ class BeoidcController extends ActionController
      */
     public function defaultSettings($postArray)
     {
+
         error_log("In BeoidcController : defaultSettings: ");
         $this->oidc_object = json_encode($postArray);
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_OIDC);
@@ -411,6 +412,7 @@ class BeoidcController extends ActionController
      */
     public function storeToDatabase($postObject)
     {
+        
         error_log("In BeoidcController : stroreToDatabase");
         $this->myjson = json_encode($postObject);
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_OIDC);

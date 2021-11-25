@@ -25,7 +25,6 @@ class CustomerMo {
             'password' => $password
         );
         $field_string = json_encode ( $fields );
-        error_log(" from create_customer");
         $ch = $this->prepareCurlOptions($url,$field_string);
         curl_setopt ( $ch, CURLOPT_HTTPHEADER, array (
             'Content-Type: application/json',
@@ -130,7 +129,7 @@ class CustomerMo {
         $field_string = json_encode($fields);
 
         error_log("TYPO3 support content : ".print_r($content,true));
-        error_log(" from support: submit_contact");
+
         $ch = $this->prepareCurlOptions($url,$field_string);
         curl_setopt($ch, CURLOPT_HTTPHEADER,
                             array("Content-Type: application/json",
@@ -160,7 +159,7 @@ class CustomerMo {
             'email' => $email
         );
         $field_string = json_encode ( $fields );
-        error_log(" from check_customer");
+
         $ch = $this->prepareCurlOptions($url,$field_string);
         curl_setopt ( $ch, CURLOPT_HTTPHEADER, array (
             'Content-Type: application/json',
@@ -187,7 +186,7 @@ class CustomerMo {
             'password' => $password
         );
         $field_string = json_encode ( $fields );
-        error_log(" from get_customer_key");
+    
         $ch = $this->prepareCurlOptions($url,$field_string);
         curl_setopt ( $ch, CURLOPT_HTTPHEADER, array (
             'Content-Type: application/json',

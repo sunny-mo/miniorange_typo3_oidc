@@ -23,6 +23,7 @@
 
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
@@ -237,8 +238,6 @@
                         <input class="form-control" {log} name="feoidc" id="feoidc" type="text"
                                required value="{conf.feoidc}">
                     </div>
-
-
                     <div class="form-group">
                         <label for="redirect_url"><b>Redirect/Callback Url</b></label>
                         <input class="form-control" {log} name="redirect_url" id="redirect_url" type="text"
@@ -309,8 +308,7 @@
                         <label type="hidden" for="response"><b></b></label>
                         <input class="form-control" {log} name="response" id="response" type="hidden"
                                value="{conf.redirect_url}">
-                    </div>
-                    
+                    </div> 
                     &nbsp
                     <div class="tile-footer">
                         <button class="btn btn-primary" type="button" {log} name="submit_saml_form" id="submit_saml_form" style="margin-right:10px;" onClick="jQuery('#oidc_form').submit();">Save settings</button>
@@ -318,6 +316,7 @@
                     </div>
                 </form>
         </div>
+        
         <hr>
 
          <div class="animated-checkbox">

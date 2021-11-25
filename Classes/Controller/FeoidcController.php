@@ -37,6 +37,7 @@ class FeoidcController extends ActionController
         //        $caches = new TypoScriptTemplateModuleController();
         //        $caches->clearCache();
         $this->cacheService->clearPageCache([$GLOBALS['TSFE']->id]);
+        
         //$samlRequest = $this->build();
         if(isset($_GET['RelayState']))
         {
