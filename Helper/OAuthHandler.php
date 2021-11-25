@@ -5,9 +5,9 @@ namespace Miniorange\Helper;
 class OAuthHandler {
 
     function getAccessToken($tokenendpoint, $grant_type, $clientid, $clientsecret, $code, $redirect_url, $send_headers, $send_body){
+        error_log("from response...");
         $response = $this->getToken ($tokenendpoint, $grant_type, $clientid, $clientsecret, $code, $redirect_url, $send_headers, $send_body);
-        $content = json_decode($response,true);
-
+        error_log("content: ".print_r($content,true));
         if(isset($content["access_token"])) {
             return $content["access_token"];
             exit;
@@ -18,18 +18,16 @@ class OAuthHandler {
     }
 
     function getToken($tokenendpoint, $grant_type, $clientid, $clientsecret, $code, $redirect_url, $send_headers, $send_body){
-
-//        $ch = curl_init($tokenendpoint);
-//        curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
-//        curl_setopt( $ch, CURLOPT_ENCODING, "" );
-//        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-//        curl_setopt( $ch, CURLOPT_AUTOREFERER, true );
-//        curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
-//        curl_setopt( $ch, CURLOPT_MAXREDIRS, 10 );
-//        curl_setopt( $ch, CURLOPT_POST, true);
-
+        
+ //       $ch = curl_init($tokenendpoint);
+ //       curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
+ //       curl_setopt( $ch, CURLOPT_ENCODING, "" );
+ //       curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+ //       curl_setopt( $ch, CURLOPT_AUTOREFERER, true );
+ //       curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
+ //       curl_setopt( $ch, CURLOPT_MAXREDIRS, 10 );
+ //       curl_setopt( $ch, CURLOPT_POST, true);
         $ch = $this->prepareCurlOptions($tokenendpoint);
-
         if($send_headers && !$send_body) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                 'Authorization: Basic ' . base64_encode( $clientid . ":" . $clientsecret ),
@@ -53,7 +51,7 @@ class OAuthHandler {
         }
 
         $response = curl_exec($ch);
-
+        error_log("response: ".$response);
         if(curl_error($ch)){
             echo "<b>Response : </b><br>";print_r($response);echo "<br><br>";
             exit( curl_error($ch) );
@@ -61,7 +59,7 @@ class OAuthHandler {
 
         if(!is_array(json_decode($response, true))){
             echo "<b>Response : </b><br>";print_r($response);echo "<br><br>";
-            exit("Invalid response received.");
+            exit("Invalid response received. 1");
         }
 
         $response = json_decode($response,true);
@@ -125,6 +123,7 @@ class OAuthHandler {
         $content = $this->getToken ($tokenendpoint, $grant_type, $clientid, $clientsecret, $code, $redirect_url, $send_headers, $send_body);
 
 //        $content = json_decode($response,true);
+        error_log("content: ".print_r($content,true));
         if(isset($content["id_token"]) || isset($content["access_token"])) {
             return $content;
             exit;
@@ -136,9 +135,12 @@ class OAuthHandler {
 
     function getResourceOwnerFromIdToken($id_token){
         $id_array = explode(".", $id_token);
+        error_log("id array: ".print_r($id_array,true));
         if(isset($id_array[1])) {
+            
             $id_body = base64_decode($id_array[1]);
             if(is_array(json_decode($id_body, true))){
+                error_log("returning");
                 return json_decode($id_body,true);
             }
         }
@@ -169,7 +171,7 @@ class OAuthHandler {
 
         if(!is_array(json_decode($response, true))){
             echo "<b>Response : </b><br>";print_r($response);echo "<br><br>";
-            exit("Invalid response received.");
+            exit("Invalid response received. 2");
         }
 
         $content = json_decode($response,true);
@@ -214,7 +216,7 @@ class OAuthHandler {
         curl_setopt( $ch, CURLOPT_MAXREDIRS, 10 );
         curl_setopt( $ch, CURLOPT_POST, true);
 //        curl_setopt ( $ch, CURLOPT_SSL_VERIFYHOST, false );
-        curl_setopt($ch, CURLOPT_PROXY, '127.0.0.1:8888');
+ //       curl_setopt($ch, CURLOPT_PROXY, '127.0.0.1:8888');
 
         return $ch;
     }

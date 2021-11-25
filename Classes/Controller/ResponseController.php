@@ -7,6 +7,7 @@ use Miniorange\Helper\Constants;
 use Miniorange\Helper\MoUtilities;
 use Miniorange\Helper\OAuthHandler;
 use Miniorange\MiniorangeOidc\Domain\Repository\ResponseRepository;
+use Miniorange\Helper\Actions\TestResultActions;
 
 use ReflectionClass;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -68,6 +69,24 @@ class ResponseController extends ActionController
         $this->frontendUserRepository = $frontendUserRepository;
     }
 
+
+    function testattrmappingconfig($nestedprefix, $resourceOwnerDetails){
+        error_log("In ResponseController : testattrmappingconfig()");
+        foreach($resourceOwnerDetails as $key => $resource){
+            if(is_array($resource) || is_object($resource)){
+                if(!empty($nestedprefix))
+                    $nestedprefix .= ".";
+                $this->testattrmappingconfig($nestedprefix.$key,$resource);
+                $nestedprefix = rtrim($nestedprefix,".");
+            } else {
+                echo "<tr><td>";
+                if(!empty($nestedprefix))
+                    echo $nestedprefix.".";
+                echo $key."</td><td>".$resource."</td></tr>";
+            }
+        }
+    }
+
     /**
      * action check
      *
@@ -75,7 +94,7 @@ class ResponseController extends ActionController
      */
     public function checkAction()
     {
-        error_log("in reponseController: beginning of CheckAction() - " . $_REQUEST);
+        error_log("In reponseController: checkAction() ");
 
 //       $caches = new TypoScriptTemplateModuleController();
 //       $caches->clearCache();
@@ -85,7 +104,7 @@ class ResponseController extends ActionController
 
             if (session_id() == '' || !isset($_SESSION))
                 session_start();
-
+                error_log("session started".print_r($_SERVER,true));
             // OAuth state security check
             /*
             if (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && $_GET['state'] !== $_SESSION['oauth2state'])) {
@@ -94,26 +113,33 @@ class ResponseController extends ActionController
                 }
                 exit('Invalid state');
             } */
-
+            error_log("code: ".print_r($_GET,true));
             if (!isset($_GET['code'])) {
+                error_log("code set");
                 if (isset($_GET['error_description']))
                     exit($_GET['error_description']);
                 else if (isset($_GET['error']))
                     exit($_GET['error']);
                 exit('Invalid response');
             } else {
+                error_log("code not set");
 
                 try {
 
                     $currentappname = "";
 
                     if (isset($_SESSION['appname']) && !empty($_SESSION['appname']))
+                    {
                         $currentappname = $_SESSION['appname'];
+                        error_log("appname is set: ".print_r($_SESSION,true));
+                    }    
                     else if (isset($_GET['state']) && !empty($_GET['state'])) {
                         $currentappname = base64_decode($_GET['state']);
+                        error_log("state is set");
                     }
 
                     if (empty($currentappname)) {
+                        error_log("no request found");
                         exit('No request found for this application.');
                     }
 
@@ -123,15 +149,16 @@ class ResponseController extends ActionController
 
                     $am_username = MoUtilities::fetchFromDb(Constants::OIDC_ATTRIBUTE_USERNAME, Constants::TABLE_OIDC);
                     $currentapp = json_decode(MoUtilities::fetchFromDb('oidc_object', Constants::TABLE_OIDC), true);
-
+                    error_log("after currentApp".print_r($currentapp,true));
                     if (isset( $am_username) &&  $am_username != "") {
                         $username_attr = $am_username;
+                        error_log("username is set");
                     } else if (isset($app['email_attr']) && $app["email_attr"] != "") {
 //                        mo_oauth_update_email_to_username_attr($currentappname);
                         $username_attr = $attr_map['email_attr'];
                         exit("Attribute Mapping not configured.");
                     }
-
+                    error_log("142");
                     if(!$currentapp)
                         exit('Application not configured.');
 
@@ -145,6 +172,11 @@ class ResponseController extends ActionController
                     if (isset($currentapp['app_type']) && $currentapp['app_type'] == Constants::TYPE_OPENID_CONNECT) {
                         // OpenId connect
                         // echo "OpenID Connect";
+
+                        $relayStateUrl = array_key_exists('RelayState', $_REQUEST) ? $_REQUEST['RelayState'] : '/';
+                     //   $relayStateUrl='testconfig';
+                        error_log("relaystate in response: ".$relayStateUrl);
+
                         $tokenResponse = $mo_oauth_handler->getIdToken($currentapp['token_endpoint'],
                             'authorization_code',
                             $currentapp['client_id'],
@@ -154,21 +186,20 @@ class ResponseController extends ActionController
                             $currentapp['set_header_credentials'],
                             $currentapp['set_body_credentials']
                         );
-
                         $idToken = isset($tokenResponse["id_token"]) ? $tokenResponse["id_token"] : $tokenResponse["access_token"];
 
                         if (!$idToken)
                             exit('Invalid token received.');
                         else
                             $resourceOwner = $mo_oauth_handler->getResourceOwnerFromIdToken($idToken);
-
+                            $resourceOwner['NameID']= ['0' => $resourceOwner['email']];
                     } else {
                         // echo "OAuth";
                         $accessTokenUrl = $currentapp['token_url'];
                         if (strpos($accessTokenUrl, "google") !== false) {
                             $accessTokenUrl = "https://www.googleapis.com/oauth2/v4/token";
+                            
                         }
-
                         $accessToken = $mo_oauth_handler->getAccessToken($accessTokenUrl,
                            'authorization_code',
                             $currentapp['clientid'],
@@ -199,16 +230,15 @@ class ResponseController extends ActionController
                     if (isset($_COOKIE['mo_oauth_test']) && $_COOKIE['mo_oauth_test']) {
                         echo '<div style="font-family:Calibri;padding:0 3%;">';
                         echo '<style>table{border-collapse:collapse;}th {background-color: #eee; text-align: center; padding: 8px; border-width:1px; border-style:solid; border-color:#212121;}tr:nth-child(odd) {background-color: #f2f2f2;} td{padding:8px;border-width:1px; border-style:solid; border-color:#212121;}</style>';
-                        echo "<h2>Test Configuration</h2><table><tr><th>Attribute Name</th><th>Attribute Value</th></tr>";
-                        testattrmappingconfig("", $resourceOwner);
-                        echo "</table>";
-                        echo '<div style="padding: 10px;"></div><input style="padding:1%;width:100px;background: #0091CD none repeat scroll 0% 0%;cursor: pointer;font-size:15px;border-width: 1px;border-style: solid;border-radius: 3px;white-space: nowrap;box-sizing: border-box;border-color: #0073AA;box-shadow: 0px 1px 0px rgba(120, 200, 230, 0.6) inset;color: #FFF;"type="button" value="Done" onClick="self.close();"></div>';
+                        (new TestResultActions($resourceOwner))->execute();
+                        setcookie('mo_oauth_test',false);
                         exit();
                     }
-
                     if (!empty($username_attr))
+                    {
                         $username = $this->getnestedattribute($resourceOwner, $username_attr); //$resourceOwner[$email_attr];
-
+                    }
+                        
                     if (empty($username) || "" === $username)
                         exit('Username not received. Check your <b>Attribute Mapping</b> configuration.');
 
@@ -235,7 +265,6 @@ class ResponseController extends ActionController
 
             $this->login_user($user_email);
         }
-
 //    }
 //        if (array_key_exists('logintype', $_REQUEST)) {
 //            if ($_REQUEST['logintype'] == 'logout') {
@@ -250,13 +279,11 @@ class ResponseController extends ActionController
 //
 //                $this->control();
 //                $this->logout($session);
-//            }
-//        }
+//            }}
     }
 
-
     function login_user($username){
-
+        error_log("In ResponseController : login_user()");
         $this->ssoemail = $username ;
 
         $username = $this->ssoemail;
@@ -288,7 +315,7 @@ class ResponseController extends ActionController
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['felogin']['login_confirmed'] = true;
         $GLOBALS['TSFE']->fe_user->storeSessionData();
         $test = $GLOBALS['TSFE']->fe_user->user;
-        if (!isset($_SESSION['id'])) {
+        if (!isset($_SESSION)) {
             session_id('email');
             session_start();
             $_SESSION['email'] = $this->ssoemail;
@@ -300,25 +327,8 @@ class ResponseController extends ActionController
     }
 
 
-
-    function testattrmappingconfig($nestedprefix, $resourceOwnerDetails){
-        foreach($resourceOwnerDetails as $key => $resource){
-            if(is_array($resource) || is_object($resource)){
-                if(!empty($nestedprefix))
-                    $nestedprefix .= ".";
-                testattrmappingconfig($nestedprefix.$key,$resource);
-                $nestedprefix = rtrim($nestedprefix,".");
-            } else {
-                echo "<tr><td>";
-                if(!empty($nestedprefix))
-                    echo $nestedprefix.".";
-                echo $key."</td><td>".$resource."</td></tr>";
-            }
-        }
-    }
-
     function getnestedattribute($resource, $key){
-        //echo $key." : ";print_r($resource); echo "<br>";
+        error_log("In ResponseController : getnestedattribute()");
         if($key==="")
             return "";
 
@@ -366,16 +376,14 @@ class ResponseController extends ActionController
         return $valid_entity;
     }
 
-
-
-    public function fetch_fname()
+    function fetch_fname()
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_OIDC);
         $fname = $queryBuilder->select('oidc_am_fname')->from(Constants::TABLE_OIDC)->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)))->execute()->fetchColumn(0);
         return $fname;
     }
 
-    public function fetch_lname()
+    function fetch_lname()
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_OIDC);
         $lname = $queryBuilder->select('oidc_am_lname')->from(Constants::TABLE_OIDC)->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)))->execute()->fetchColumn(0);
@@ -385,7 +393,7 @@ class ResponseController extends ActionController
     /**
      * @param $val
      */
-    public function setFlag($val)
+    function setFlag($val)
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_OIDC);
         $queryBuilder->update(Constants::TABLE_OIDC)->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)))->set('custom_attr', $val)->execute();
@@ -397,10 +405,10 @@ class ResponseController extends ActionController
      * @return string
      * @throws \Exception
      */
-    public function logout($ses_id)
+    function logout($ses_id)
     {
+        error_log("In ResponseController : logout()");
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_OIDC);
-        error_log("inside logout");
 //        $logout_url = $queryBuilder->select('saml_logout_url')->from(Constants::OIDC_TABLE)->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)))->execute()->fetchColumn(0);
 
 //        if (isset($_REQUEST['SAMLResponse'])) {
@@ -466,7 +474,7 @@ class ResponseController extends ActionController
      * @param $slo_binding_type
      * @return string
      */
-    public function createLogoutRequest($nameId, $sessionIndex = '', $issuer, $destination, $slo_binding_type = 'HttpRedirect')
+    function createLogoutRequest($nameId, $sessionIndex = '', $issuer, $destination, $slo_binding_type = 'HttpRedirect')
     {
 /*        $requestXmlStr = '<?xml version="1.0" encoding="UTF-8"?>' . '<samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ID="' . $this->generateID() . '" IssueInstant="' . $this->generateTimestamp() . '" Version="2.0" Destination="' . $destination . '">*/
 //						<saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">'.$issuer.'</saml:Issuer>
@@ -489,7 +497,7 @@ class ResponseController extends ActionController
 	 * @param $username
 	 * @return FrontendUser
 	 */
-    public function create($username)
+    function create($username)
     {
         $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
 
@@ -503,7 +511,6 @@ class ResponseController extends ActionController
 
         $userGroup = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Domain\\Repository\\FrontendUserGroupRepository')->findByUid(1);
 
-        error_log('userGroup :'.$userGroup);
 
         $frontendUser->addUsergroup($userGroup);
 
@@ -512,7 +519,7 @@ class ResponseController extends ActionController
         return $frontendUser;
     }
 
-    public function control()
+    function control()
     {
       
     }
@@ -555,6 +562,5 @@ class ResponseController extends ActionController
     function generateRandomBytes($length, $fallback = TRUE)
     {
         return openssl_random_pseudo_bytes($length);
-    }
-
+    }  
 }

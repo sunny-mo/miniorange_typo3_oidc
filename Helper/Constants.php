@@ -41,6 +41,8 @@ class Constants
     const OIDC_SET_BODY_CREDS = 'set_body_credentials' ;//varchar (100) DEFAULT '',
     const OIDC_GRANT_TYPE = 'grant_type';// varchar (100) DEFAULT '',
     const OIDC_ATTRIBUTE_USERNAME = 'oidc_am_username';//  varchar (100) DEFAULT '' ,
+    const COLUMN_PLUGIN_RESPONSE_URL = 'response';
+    const COLUMN_PLUGIN_FEOIDC_URL = 'feoidc';
 //    const OIDC_ATTRIBUTE_EMAIL =   'oidc_am_email';// varchar (100) DEFAULT '' ,
 //    const OIDC_ATTRIBUTE_FNAME =   'oidc_am_fname';// varchar (100) DEFAULT '' ,
 //    const OIDC_ATTRIBUTE_LNAME =   'oidc_am_lname';// varchar (100) DEFAULT '' ,

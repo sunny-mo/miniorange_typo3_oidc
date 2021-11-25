@@ -33,16 +33,21 @@ class FeoidcController extends ActionController
      */
     public function sendRequestAction()
     {
-        error_log("Feoidc Controller, inside printAction: ");
+        error_log("In FeoidcController : sendRequestAction()");
         //        $caches = new TypoScriptTemplateModuleController();
         //        $caches->clearCache();
         $this->cacheService->clearPageCache([$GLOBALS['TSFE']->id]);
-
+        //$samlRequest = $this->build();
+        if(isset($_GET['RelayState']))
+        {
+            $cookkey="mo_oauth_test";
+            $cookval=true;
+            setcookie($cookkey,$cookval);
+        }
         $relayState = isset($_REQUEST['RelayState']) ? $_REQUEST['RelayState'] : '/';
         if ($this->findSubstring($_REQUEST) == 1) {
             $relayState = 'testconfig';
         }
-        error_log("relaystate :  ".$relayState);
 
         $auth_url = $this->createAuthorizationUrl();
         header('Location: ' . $auth_url);
@@ -62,6 +67,7 @@ class FeoidcController extends ActionController
     }
 
     private function createAuthorizationUrl(){
+        error_log("In FeoidcConroller : createAuthorizationUrl()");
 
         $json_object = MoUtilities::fetchFromDb(Constants::OIDC_OIDC_OBJECT,Constants::TABLE_OIDC);
         $app = json_decode($json_object,true);
@@ -111,11 +117,12 @@ class FeoidcController extends ActionController
     }
 
     function testAttrMappingConfig($nestedprefix, $resourceOwnerDetails){
+        error_log("In FeoidcController : testAttrMappingConfig()");
         foreach($resourceOwnerDetails as $key => $resource){
             if(is_array($resource) || is_object($resource)){
                 if(!empty($nestedprefix))
                     $nestedprefix .= ".";
-                testattrmappingconfig($nestedprefix.$key,$resource);
+                $this->testattrmappingconfig($nestedprefix.$key,$resource);
                 $nestedprefix = rtrim($nestedprefix,".");
             } else {
                 echo "<tr><td>";

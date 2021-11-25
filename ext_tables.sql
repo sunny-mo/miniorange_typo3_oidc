@@ -15,6 +15,8 @@ CREATE TABLE mo_oidc (
   set_header_credentials varchar (100) DEFAULT '' ,
   set_body_credentials varchar (100) DEFAULT '',
   grant_type varchar (100) DEFAULT '',
+  feoidc varchar (100) DEFAULT '' NOT NULL,
+  response varchar (100) DEFAULT '' NOT NULL,
   oidc_am_username varchar (100) DEFAULT '' ,
   oidc_am_email varchar (100) DEFAULT '' ,
   oidc_am_fname varchar (100) DEFAULT '' ,
