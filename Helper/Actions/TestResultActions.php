@@ -76,7 +76,7 @@ class TestResultActions
     public function __construct($attrs, SAMLResponseException $samlResponseException = null)
     {
         error_log("attrs: ".print_r($attrs,true));
-        $this->attrs['email']= $attrs['email'];
+        $this->attrs= $attrs;
         error_log("attributes: ".print_r($this->attrs,true));
         $this->nameId = $attrs["email"];
         //$this->hasExceptionOccurred = Utilities::isBlank($samlResponseException) ? FALSE : TRUE;
@@ -170,6 +170,7 @@ class TestResultActions
         foreach ($this->attrs as $key => $value)
         {
             error_log("table values: ".print_r($value,true));
+            if(!is_array($value))
             $value= explode(' ',$value);
             if(!in_array(null, $value))
                 $tableContent .= str_replace("{{key}}",$key,str_replace("{{value}}",

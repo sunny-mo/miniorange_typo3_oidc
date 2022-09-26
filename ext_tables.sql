@@ -25,6 +25,8 @@ CREATE TABLE mo_oidc (
   custom_attrs varchar (1000) DEFAULT '',
   oidc_object text DEFAULT '',
   am_object text DEFAULT '',
+  defaultGroup text DEFAULT '',
+  countuser int(11) DEFAULT '10' NOT NULL,
 	PRIMARY KEY (uid)
 );
 

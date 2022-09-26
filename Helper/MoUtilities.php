@@ -15,7 +15,7 @@ namespace Miniorange\Helper;
     use TYPO3\CMS\Core\Utility\GeneralUtility;
     use TYPO3\CMS\Core\Utility\PathUtility;
 
-    const SEP = DIRECTORY_SEPARATOR;
+    //const SEP = DIRECTORY_SEPARATOR;
 
 	class MoUtilities
     {
@@ -183,11 +183,17 @@ namespace Miniorange\Helper;
             }
 
             //Update a value in Database
-            public static function updateColumn($column,$value,$table)
-            {
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
-                $affectedRows = $queryBuilder->insert($table)->values([ $column => $value, ])->execute();
-            }
+            // public static function updateColumn($column,$value,$table)
+            // {
+            //     $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
+            //     $affectedRows = $queryBuilder->insert($table)->values([ $column => $value ])->execute();
+            // }
+
+			public static function updateColumn($column,$value,$table)
+			{
+				$queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
+				$queryBuilder->update('mo_oidc')->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter(1, PDO::PARAM_INT)))->set($column, $value)->execute();
+			}
 
             //Fetch a value from Database
             public static function fetchFromDb($col, $table){
