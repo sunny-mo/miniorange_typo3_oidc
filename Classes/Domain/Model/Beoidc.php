@@ -1,10 +1,9 @@
 <?php
 namespace Miniorange\MiniorangeOidc\Domain\Model;
-
 /**
  * Beoidc
  */
-class Beoidc extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Beoidc extends TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     public $idp_name = '';
 

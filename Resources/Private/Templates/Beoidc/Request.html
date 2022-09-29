@@ -23,7 +23,7 @@
 
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
+    
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
@@ -195,6 +195,11 @@
             font-weight: bold;
             background: #ffe6e6;
         }
+        .price .header {
+        background-color: #111;
+        color: white;
+        font-size: 25px;
+        }
     </style>
 
 </head>
@@ -204,10 +209,9 @@
 <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
 
 <div class="tab">
-    <button id="account_tab_btn" class="tablinks button" onclick="removeFlashMessage(); openTab(event,'Account')">Account</button>
     <button id="oidc_tab_btn" class="tablinks button" onclick="removeFlashMessage(); openTab(event, 'OIDC_Settings')">OpenID Connect Client</button>
     <button id="am_tab_btn" class="tablinks button" onclick="removeFlashMessage(); openTab(event, 'Attribute_Mapping')">Attribute Mapping</button>
-    <button id="support_tab_btn" class="tablinks button" onclick="removeFlashMessage(); openTab(event,'Support')">Support</button>
+    <button id="upgrade_tab_btn" class="tablinks button" onclick="removeFlashMessage(); openTab(event, 'Upgrade')">Upgrade</button>
 </div>
 
 <input hidden name="taby" id="taby" value="{tab}">
@@ -217,8 +221,8 @@
     <div id="leftContainer">
 
         <!--   Configure OpenID Connect tab-->
-        <div id="OIDC_Settings" class="tabcontent"  >
-            <h3><strong>Configure OpenID Connect Client </strong></h3>  <p class="premiumMessage" style={nolog} >  [Please login to configure settings.]</p>
+        <div id="OIDC_Settings" style="margin-left:-15%" class="tabcontent"  >
+            <h3><strong>Configure OpenID Connect Client </strong></h3>  <p class="premiumMessage" > </p>
             <hr>
             <div class="tile" >
                 <form method="POST" action="" id="oidc_form" >
@@ -234,79 +238,84 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="feoidc"><b>feoidc page Url</b></label>
+                        <input class="form-control" name="feoidc" id="feoidc" type="text"
+                               required value="{conf.feoidc}">
+                    </div>
+                    <div class="form-group">
                         <label for="redirect_url"><b>Redirect/Callback Url</b></label>
-                        <input class="form-control" {log} name="redirect_url" id="redirect_url" type="text"
+                        <input class="form-control" name="redirect_url" id="redirect_url" type="text"
                                required value="{conf.redirect_url}">
                     </div>
 
                     <div class="form-group">
                         <label for="app_name"><b>Application Name</b><span class="premiumMessage"> * </span></label>
-                        <input class="form-control" {log} name="app_name" id="app_name" type="text"
+                        <input class="form-control" name="app_name" id="app_name" type="text"
                                required value="{conf.app_name}">
                     </div>
 
                     <div class="form-group">
                         <label for="client_id"><b>Client ID</b><span class="premiumMessage"> * </span></label>
-                        <input class="form-control" {log} name="client_id" id="client_id" type="text" required value="{conf.client_id}">
+                        <input class="form-control" name="client_id" id="client_id" type="text" required value="{conf.client_id}">
                     </div>
 
                     <div class="form-group">
                         <label for="client_secret"><b>Client Secret</b><span class="premiumMessage"> * </span></label>
-                        <input class="form-control" {log} name="client_secret" id="client_secret" type="password" required value="{conf.client_secret}">
+                        <input class="form-control" name="client_secret" id="client_secret" type="password" required value="{conf.client_secret}">
                     </div>
 
                     <div class="form-group">
                         <label for="scope"><b>Scope</b></label>
-                        <input class="form-control" {log} name="scope" id="scope" type="text" value="{conf.scope}">
+                        <input class="form-control" name="scope" id="scope" type="text" value="{conf.scope}">
                     </div>
 
                     <div class="form-group">
                         <label for="auth_endpoint"><b>Authorization Endpoint</b><span class="premiumMessage"> * </span></label>
-                        <input class="form-control" {log} name="auth_endpoint" id="auth_endpoint" type="text" required value="{conf.auth_endpoint}">
+                        <input class="form-control" name="auth_endpoint" id="auth_endpoint" type="text" required value="{conf.auth_endpoint}">
                     </div>
 
                     <div class="form-group">
                         <label for="token_endpoint"><b>Access Token Endpoint</b><span class="premiumMessage"> * </span></label>
-                        <input class="form-control" {log} name="token_endpoint" id="token_endpoint" type="text" required value="{conf.token_endpoint}">
+                        <input class="form-control" name="token_endpoint" id="token_endpoint" type="text" required value="{conf.token_endpoint}">
                     </div>
 
                     <div class="form-group">
                         <label for="user_info_endpoint"><b>User Info Endpoint</b></label>
-                        <input class="form-control" {log} name="user_info_endpoint" id="user_info_endpoint" type="text" value="{conf.user_info_endpoint}">
+                        <input class="form-control" name="user_info_endpoint" id="user_info_endpoint" type="text" value="{conf.user_info_endpoint}">
                     </div>
 
                     <div class="animated-checkbox">
 
                         <f:if condition="{conf.set_header_credentials} == 'on' ">
                             <f:then>
+                                <label> <span class="label-text">Set client credentials in Header</span></label>
                                 <input type="checkbox" checked id="set_header_credentials"  name="set_header_credentials" >
+                                <label> <span class="label-text">Set client credentials in Body</span></label>
+                                <input type="checkbox" id="set_body_credentials"  name="set_body_credentials" >
                             </f:then>
                             <f:else>
-                                <input type="checkbox" id="set_body_credentials"  name="set_body_credentials" >
-                            </f:else>
-                        </f:if>
-                        <label> <span class="label-text">Set client credentials in Header</span></label>
-
-                        <f:if condition="{conf.set_body_credentials} = 'on'">
-                            <f:then>
+                                <label> <span class="label-text">Set client credentials in Header</span></label>
+                                <input type="checkbox" id="set_header_credentials"  name="set_header_credentials" >
+                                <label> <span class="label-text">Set client credentials in Body</span></label>
                                 <input type="checkbox" checked id="set_body_credentials"  name="set_body_credentials" >
-                            </f:then>
-                            <f:else>
-                                <input type="checkbox" id="set_body_credentials"  name="set_body_credentials" >
                             </f:else>
                         </f:if>
-                        <label> <span class="label-text">Set client credentials in Body</span></label>
 
                     </div>
 
+                    <div class="form-group" >
+                        <label type="hidden" for="response"><b></b></label>
+                        <input class="form-control" name="response" id="response" type="hidden"
+                               value="{conf.redirect_url}">
+                    </div> 
                     &nbsp
                     <div class="tile-footer">
-                        <button class="btn btn-primary" type="button" {log} name="submit_saml_form" id="submit_saml_form" style="margin-right:10px;" onClick="jQuery('#oidc_form').submit();">Save settings</button>
-<!--                        <a  {log} style="text-decoration:none"><button onClick="window.open('{conf2.feoidc}'+'?RelayState=testconfig');" {log} class="btn btn-primary" name="do_sso" type="button">Test Configuration</button></a>-->
+                        <button class="btn btn-primary" type="button" name="submit_saml_form" id="submit_saml_form" style="margin-right:10px;" onClick="jQuery('#oidc_form').submit();">Save settings</button>
+                        <a style="text-decoration:none"><button onClick="window.open('{conf.feoidc}'+'?RelayState=testconfig');" class="btn btn-primary" name="do_sso" type="button">Test Configuration</button></a>
                     </div>
                 </form>
         </div>
-
+        
         <hr>
 
          <div class="animated-checkbox">
@@ -335,7 +344,7 @@
         </div>
 
         <!--   ATTRIBUTE MAPPING TAB-->
-        <div id="Attribute_Mapping" class="tabcontent"  >
+        <div id="Attribute_Mapping" style="margin-left:-15%" class="tabcontent"  >
             <form id="attrs_form" method="post" action ="">
                 <input type="hidden" name="option" value="attribute_mapping">
                 <!--            <br>-->
@@ -344,11 +353,11 @@
                 <div class="tile">
                     <div class="form-group">
                         <label for="oidc_am_username"><strong>Username</strong><span class="premiumMessage"> * </span></label>
-                        <input class="form-control" {log} id="oidc_am_username" name="oidc_am_username" type="text" value="{am_username}">
+                        <input class="form-control" id="oidc_am_username" name="oidc_am_username" type="text" value="{am_username}">
                     </div>
                     &nbsp;
                     <div disabled >
-                        <p class="premiumMessage" >Advanced attribute mapping is available in premium version only.</p>
+                        <p class="premiumMessage" >Advanced attribute mapping is available in premium version only. Contact us at <a href="https://mail.google.com/mail/u/0/?fs=1&amp;tf=cm&amp;source=mailto&amp;su=Query+to+purchase+Typo3+OpenID+Connect+Premium+Plan+&amp;to=info@xecurify.com&amp;body=I+want+to+enquire+about+the+purchase+of+the+Typo3+OpenID+Connect+Premium+Plan.+" target="_blank">info@xecurify.com</a> to upgrade to premium version</p>
 
                         <div class="form-group">
                             <label for="oidc_am_email"><strong>Email</strong><span class="premiumMessage"> * </span></label>
@@ -369,188 +378,73 @@
                             <input class="form-control"  disabled id="oidc_am_group" name="oidc_am_group" type="text" value="">
                         </div>
 
+                        <div class="form-group">
+                            <label for="oidc_default_group"><strong>Default Group</strong><span class="premiumMessage"> * </span></label>
+                            <select class="form-control gm-input" name="defaultUserGroup" id="defaultUserGroup" >
+                                <f:for each="{allUserGroups}" as="userGroup">
+                                    <f:if condition="{userGroup.title}=={defaultGroup}" >
+                                        <f:then>
+                                            <option selected value="{userGroup.title}">{userGroup.title}</option>
+                                        </f:then>
+                                        <f:else>
+                                            <option value="{userGroup.title}">{userGroup.title}</option>
+                                        </f:else>
+                                    </f:if>
+                                </f:for>
+                            </select>
+                        </div>
+
                     </div>
                 </div>
 
                 <div class="form-inline">
                 </div>
                 <br/>
-                <button type="submit" {log} class="btn btn-primary" name="custom_attrs" id="custom_attrs" onClick="jQuery('#attrs_form').submit();">Save Attribute Mapping</button>
+                <button type="submit" class="btn btn-primary" name="custom_attrs" id="custom_attrs" onClick="jQuery('#attrs_form').submit();">Save Attribute Mapping</button>
                 <!--</div>-->
             </form>
         </div>
 
-        <!--   ACCOUNT TAB-->
-        <div id="Account" style="margin-left: 20px" class="tabcontent" >
-
-            <!--    IF USER NOT LOGGED IN -->
-            <f:if condition="{0: status} == {0:'not_logged'} ">
-                <form name="account" method="post" id="account_form">
-                    <input type="hidden" name="option" value="mo_verify_customer"/>
-
-                    <div id="toggle1" class="panel_toggle">
-                        <h3><strong>Register/Login with Miniorange</strong></h3>
-                    </div>
-                    &nbsp;
-                    <h4 style=" color: #545454;"><strong>Why should I register?</strong></h4>
-
-                    <div style="background: aliceblue; padding: 10px 10px 10px 10px; border-radius: 10px; color: #545454;">
-                        You should login/register so that in case you need help, we can help you with step by step
-                        instructions.
-<!--                        We support all known IdPs - ADFS, Okta, Salesforce, Shibboleth,-->
-<!--                        SimpleSAMLphp, OpenAM, Centrify, Ping, RSA, IBM, Oracle, OneLogin, Bitium, WSO2 etc.-->
-                        <b>You will also need a miniOrange account to upgrade to the premium version of this extension.</b>
-                        We do not store any information except the email that you will use to register with us.
-                    </div>
-
-                    <p id="att-map-tab-partial">If you already have a miniOrange account, submit your existing credentials.
-                        We will retrieve your existing account for you.</p>
-
+         <!--   UPGRADE TAB-->
+         <div id="Upgrade" class="tabcontent">
+            <div class="container">
+              <div class="row">
+        
+               <div class="columns">
+                 <ul class="price">
+                    <h3><strong>Premium Plan ($449*)</strong> </h3>
                     <hr>
-                    <div id="panel1" class="" style="height: 70%">
-                        <p><b>Please enter your miniOrange email and password.<br/> <a target="_blank" href="https://login.xecurify.com/moas/idp/resetpassword">Click
-                            here if you forgot your password?</a></b></p>
-                        <div>
-                            <input type="checkbox" id="registered" name="registered" value="isChecked" onclick="ifUserRegistered()"/> Already Registered<br>
-                            <br>
-                        </div>
-
-                        <div class="col-lg-8 tile" style=" height: fit-content">
-
-                            <label color="#FF0000">Email:</label>
-                            <input class="form-control" type="email" name="email"
-                                   required placeholder="person@example.com"
-                                   value="
-                                    "/>
-                            <br>
-                            <label color="#FF0000">Password:</label>
-                            <input class="form-control" required type="password"
-                                   name="password" placeholder="Enter your password"
-                                   minlength="6" pattern="^[(\w)*(!@#$.%^&*-_)*]+$"
-                                   title="Minimum 6 characters should be present. Maximum 15 characters should be present. Only following symbols (!@#.$%^&*) should be present."/>
-                            <br>
-
-                            <div id="confirmPasswordDiv">
-
-                                <label color="#FF0000">Confirm Password:</label>
-                                <input class="form-control" type="password"
-                                       name="confirmPassword" placeholder="Confirm your password"
-                                       minlength="6" pattern="^[(\w)*(!@#$.%^&*-_)*]+$"
-                                       title="Minimum 6 characters should be present. Maximum 15 characters should be present. Only following symbols (!@#.$%^&*) should be present."/>
-                            </div>
-                            <br>
-
-                            <button type="submit" class="btn btn-primary" value="submit" onClick="jQuery('#account_form').submit();"> Login </button>
-                            <br>
-                            &nbsp;
-                            &nbsp;
-                        </div>
-                        <br>
-                    </div>
-                    <br>
-                    &nbsp;
-
-                    &nbsp;
+                     <li><h4>&#9989; Basic Attribute Mapping</h4></li><br>
+                     <li><h4>&#9989; Auto Create Users (Unlimited)</h4></li><br>
+                     <li><h4>&#9989; Add SSO login button</h4></li><br>
+                     <li><h4>&#9989; Oauth Single Logout</h4></li><br>
+                     <li><h4>&#9989; Advanced Attribute Mapping</h4></li><br>
+                     <li><h4>&#9989; Custom Attribute Mapping</h4></li><br>
+                     <li><h4>&#9989; Advanced Role Mapping</h4></li><br>
+                     <a class="btn btn-primary" href="https://mail.google.com/mail/u/0/?fs=1&amp;tf=cm&amp;source=mailto&amp;su=Query+to+purchase+Typo3+OpenID+Connect+Premium+Plan+&amp;to=info@xecurify.com&amp;body=I+want+to+enquire+about+the+purchase+of+the+Typo3+OpenID+Connect+Premium+Plan.+" target="_blank" rel="nofollow" class="button btn-round">Upgrade Now</a>
+                 </ul>
+               </div>
+              </div>
+        
+              <div style="margin:2% 0 2% 2%;">
+               <form style="display:none;" id="mocf_loginform" action="'.$hostname.'/moas/login"
+                  target="_blank" method="post">
+                  <input type="email" name="username" value="'.$email.'" >
+                  <input type="text" name="redirectUrl" value="'.$hostname.'/moas/initializepayment" >
+                  <input type="text" name="requestOrigin" id="requestOrigin"  >
                 </form>
-                <br>
-                <br>
-            </f:if>
-
-            <br>
-
-            <!--    IF  USER LOGGED-->
-            <f:if condition="{0: status} == {0: 'logged'}">
-                <div id="toggle3" class="panel_toggle">
-                    <h3 ><strong>Profile</strong></h3>
-                </div>
-                <hr>
-                <div class="tile">
-
-                    <table class="profileTable" >
-                        <tr>
-                            <td><strong>Email : </strong></td>
-                            <td>{email}</td>
-                        </tr>
-                        &nbsp
-                        <tr>
-                            <td><strong>ID : </strong></td>
-                            <td>{key}</td>
-                        </tr>
-                        &nbsp
-                        <tr>
-                            <td><strong>Token : </strong></td>
-                            <td>{token}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Api Key : </strong></td>
-                            <td>{api_key}</td>
-                        </tr>
-                    </table>
-
-                    &nbsp
-
-                    <!--     CHANGE ACCOUNT -->
-                    <form name="log_out_form" id="log_out_form" method="post" action="">
-                        <input type="hidden" name="option" value="logout">
-
-                        <input type="submit"
-                               name="submit"
-                               value="Log out"
-                               class="btn btn-primary" onclick="jQuery('#log_out_form').submit();" />
-                    </form>
-
-                </div>
-
-            </f:if>
-
-        </div>
-
-
-    </div>
-
-    <!-- Right Container - SUPPORT TAB-->
-    <div id="rightContainer">
-        <div id="Support" class="tabcontent" >
-            <h3><strong>Support</strong></h3>
-            <hr>
-            &nbsp;
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="tile">
-                        <div class="row ">
-                            <div class="col-lg-10">
-                                <form method="post" action="">
-                                    <p><b>Need any help? Just send us a query and we will get back to you soon.</b></p>
-                                    <!--                                    We can help you in configuring the connector with your Identity Provider. -->
-                                    <input type="hidden" name="option" value="mo_saml_contact_us_query_option"/>
-                                    &nbsp;
-                                    <div class="form-group">
-                                        <input class="form-control" type="text" name="mo_saml_contact_us_email" placeholder="Enter your email" value="{email}">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <input class="form-control" type="tel" name="mo_saml_contact_us_phone" placeholder="Enter your phone number">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <textarea class="form-control" rows="6" name="mo_saml_contact_us_query" placeholder="Enter your query here"></textarea>
-                                    </div>
-                                    <div class="tile-footer">
-                                        <button class="btn btn-primary" type="submit" name="submit">Submit</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+               </div>
+              </div>
             </div>
-        </div>
+        
+
+
     </div>
 
 </div>
 
 <script>
-    function mo_saml_valid_query(f) {
+    function mo_valid_query(f) {
         !(/^[a-zA-Z?,.\(\)\/@ 0-9]*$/).test(f.value) ? f.value = f.value.replace(
             /[^a-zA-Z?,.\(\)\/@ 0-9]/, '') : null;
     }
@@ -562,14 +456,9 @@
         var session = document.getElementById('taby').value;
         console.log("Session in start : in ready(): "+session);
 
-        if (session == "OIDC_Settings")
+        if (session == "OIDC_Settings" || session == "")
         {
             openTab(event, 'OIDC_Settings');
-        }
-
-        if (session == "Support"){
-
-            openTab(event, 'Support');
         }
 
         if (session == "Attribute_Mapping")
@@ -577,12 +466,11 @@
             openTab(event, 'Attribute_Mapping');
         }
 
-        if(session == "" || session == "Account" || session==null)
-        {
-            openTab(event, 'Account');
-            $("#account_tab_btn").addClass("active");
-            session = "Account";
-        }
+        // if(session == "" || session==null)
+        // {
+        //     openTab(event, 'OIDC_Settings');
+        //     session = "OIDC_Settings";
+        // }
 
         if(document.getElementsByClassName("active").length === 0){
             document.getElementById(session).className  += " active";
@@ -616,7 +504,6 @@
 
         if(activeTab!=="Support"){
             document.getElementById(activeTab).style.display = "block";
-            document.getElementById("Support").style.display = "block";
         }else{
             document.getElementById(activeTab).style.display = "block";
             document.getElementById("leftContainer").classList.replace("showElement","hideElement");
