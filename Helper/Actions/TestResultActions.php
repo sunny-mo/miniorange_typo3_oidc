@@ -78,7 +78,7 @@ class TestResultActions
         error_log("attrs: ".print_r($attrs,true));
         $this->attrs= $attrs;
         error_log("attributes: ".print_r($this->attrs,true));
-        $this->nameId = $attrs["email"];
+        $this->nameId = $attrs["email"] ?: $attrs["mail"];
         //$this->hasExceptionOccurred = Utilities::isBlank($samlResponseException) ? FALSE : TRUE;
     }
 
