@@ -47,8 +47,8 @@ call_user_func(
                 elements {
                     Feoidckey {
                         iconIdentifier = miniorange_oidc-plugin-feoidc
-                        title = LLL:EXT:miniorange_oidc/Resources/Private/Language/locallang_db.xlf:tx_miniorangeoidc_feoidc.name
-                        description = LLL:EXT:miniorange_oidc/Resources/Private/Language/locallang_db.xlf:tx_miniorangeoidc_feoidc.description
+                        title = LLL:EXT:miniorange_oidc/Resources/Private/Language/locallang_db.xlf:tx_MiniorangeOidc_feoidc.name
+                        description = LLL:EXT:miniorange_oidc/Resources/Private/Language/locallang_db.xlf:tx_MiniorangeOidc_feoidc.description
                         tt_content_defValues {
                             CType = list
                             list_type = feoidc
@@ -56,8 +56,8 @@ call_user_func(
                     }
                     Responsekey {
                         iconIdentifier = miniorange_oidc-plugin-response
-                        title = LLL:EXT:miniorange_oidc/Resources/Private/Language/locallang_db.xlf:tx_miniorangeoidc_response.name
-                        description = LLL:EXT:miniorange_oidc/Resources/Private/Language/locallang_db.xlf:tx_miniorangeoidc_response.description
+                        title = LLL:EXT:miniorange_oidc/Resources/Private/Language/locallang_db.xlf:tx_MiniorangeOidc_response.name
+                        description = LLL:EXT:miniorange_oidc/Resources/Private/Language/locallang_db.xlf:tx_MiniorangeOidc_response.description
                         tt_content_defValues {
                             CType = list
                             list_type = response
