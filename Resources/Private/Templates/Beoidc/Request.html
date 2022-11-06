@@ -221,7 +221,7 @@
     <div id="leftContainer">
 
         <!--   Configure OpenID Connect tab-->
-        <div id="OIDC_Settings" style="margin-left:-15%" class="tabcontent"  >
+        <div id="OIDC_Settings"  class="tabcontent"  >
             <h3><strong>Configure OpenID Connect Client </strong></h3>  <p class="premiumMessage" > </p>
             <hr>
             <div class="tile" >
@@ -344,7 +344,7 @@
         </div>
 
         <!--   ATTRIBUTE MAPPING TAB-->
-        <div id="Attribute_Mapping" style="margin-left:-15%" class="tabcontent"  >
+        <div id="Attribute_Mapping" class="tabcontent"  >
             <form id="attrs_form" method="post" action ="">
                 <input type="hidden" name="option" value="attribute_mapping">
                 <!--            <br>-->
@@ -441,6 +441,24 @@
 
     </div>
 
+    <div id="rightContainer">
+
+    <div id="Support" class="tabcontent">
+        <h3 style="text-align:center"><strong>Support</strong></h3>
+        <hr>
+        <h4 style="text-align:center; margin-top: 25%;"><b>Need help with the setup???</b></h4>
+        <h4 style="text-align:center"><b>Facing any issues???</b></h4>
+        <h4 style="text-align:center"><b>Need demo of the Premium features???</b></h4><br>
+        <h4 style="text-align:center">Click the button below for help</h4>
+        <br>
+        <div style="text-align:center; ">
+            <a target="blank" class="btn btn-primary" style="width:40%;" name="custom_attrs" id="custom_attrs" href="https://www.miniorange.com/contact">Contact Us</a>
+        </div>
+    </div>
+</div>
+
+</div>
+
 </div>
 
 <script>
@@ -503,7 +521,16 @@
         }
 
         if(activeTab!=="Support"){
-            document.getElementById(activeTab).style.display = "block";
+            if(activeTab=="Upgrade")
+            {
+                document.getElementById(activeTab).style.display = "block";
+            }
+            else
+            {
+                document.getElementById(activeTab).style.display = "block";
+                document.getElementById("Support").style.display = "block";
+                document.getElementById(activeTab+"_Tab").classList.add("active");
+            }
         }else{
             document.getElementById(activeTab).style.display = "block";
             document.getElementById("leftContainer").classList.replace("showElement","hideElement");

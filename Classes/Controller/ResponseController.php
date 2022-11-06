@@ -98,7 +98,6 @@ class ResponseController extends ActionController
 
        GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->flushCaches();
         if (strpos($_SERVER['REQUEST_URI'], "/oauthcallback") !== false || isset($_GET['code'])) {
-
             if (session_id() == '' || !isset($_SESSION))
                 session_start();
 
@@ -130,7 +129,6 @@ class ResponseController extends ActionController
                     else if (isset($_GET['state']) && !empty($_GET['state'])) {
                         $currentappname = base64_decode($_GET['state']);
                     }
-
                     if (empty($currentappname)) {
                         exit('No request found for this application.');
                     }
@@ -165,7 +163,6 @@ class ResponseController extends ActionController
                         $relayStateUrl = array_key_exists('RelayState', $_REQUEST) ? $_REQUEST['RelayState'] : '/';
                      //   $relayStateUrl='testconfig';
                         error_log("relaystate in response: ".$relayStateUrl);
-
                         $tokenResponse = $mo_oauth_handler->getIdToken($currentapp['token_endpoint'],
                             'authorization_code',
                             $currentapp['client_id'],
@@ -182,8 +179,7 @@ class ResponseController extends ActionController
                             exit('Invalid token received.');
                         else
                             $resourceOwner = $mo_oauth_handler->getResourceOwnerFromIdToken($idToken);
-
-                            $resourceOwner['NameID']= ['0' => $resourceOwner['email']];
+                            $resourceOwner['NameID']= ['0' => $resourceOwner['email'] ?: $resourceOwner['mail']];
                     } else {
                         // echo "OAuth";
                         $accessTokenUrl = $currentapp['token_url'];
@@ -215,11 +211,7 @@ class ResponseController extends ActionController
                     }
 
                     $username = "";
-                    //$resourceOwner = (string)$resourceOwner;
-                    //$queryBuilder->update('mo_oidc')->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter(1, PDO::PARAM_INT)))->set('spobject', $this->spobject)->execute();
-                    //MoUtilities::updateColumn(Constants::OIDC_ATTR_LIST_OBJECT, $resourceOwner, Constants::TABLE_OIDC);
-                    //MoUtilities::update_cust(Constants::OIDC_ATTR_LIST_OBJECT,$resourceOwner);
-//                    update_option('mo_oauth_attr_name_list', $resourceOwner);
+                    
                     //TEST Configuration
                     if (isset($_COOKIE['mo_oauth_test']) && $_COOKIE['mo_oauth_test']) {
                         echo '<div style="font-family:Calibri;padding:0 3%;">';
@@ -243,8 +235,10 @@ class ResponseController extends ActionController
                     exit($e->getMessage());
                 }
             }
-
+            if(is_array($username))
             $this->login_user($username['0']);
+            else
+            $this->login_user($username);
         }
 
 
@@ -258,21 +252,6 @@ class ResponseController extends ActionController
 
             $this->login_user($user_email);
         }
-//    }
-//        if (array_key_exists('logintype', $_REQUEST)) {
-//            if ($_REQUEST['logintype'] == 'logout') {
-//                error_log("Logout intercepted.");
-//                $session = $_COOKIE['fe_typo_user'];
-//
-//                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('fe_sessions');
-//                $uid = $queryBuilder->select('ses_userid')->from('fe_sessions')->where($queryBuilder->expr()->eq('ses_id', $queryBuilder->createNamedParameter($session, \PDO::PARAM_STR)))->execute()->fetchColumn(0);
-//
-//                $queryBuilder2 = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('fe_users');
-//                $this->ssoemail = $queryBuilder2->select('email')->from('fe_users')->where($queryBuilder2->expr()->eq('uid', $queryBuilder2->createNamedParameter($uid, \PDO::PARAM_INT)))->execute()->fetchColumn(0);
-//
-//                $this->control();
-//                $this->logout($session);
-//            }}
     }
 
 
@@ -296,7 +275,6 @@ class ResponseController extends ActionController
             else{
                 echo "Auto create user limit exceeded...Please upgrade to the premium version";exit;
             }
-            //$user = $GLOBALS['TSFE']->fe_user->fetchUserRecord($info['db_user'], $username);
             $user = Utilities::fetchUserFromUsername($username);
         }
         $GLOBALS['TSFE']->fe_user->forceSetCookie = TRUE;
@@ -307,9 +285,14 @@ class ResponseController extends ActionController
         $GLOBALS['TSFE']->fe_user->loginSessionStarted = TRUE;
         $GLOBALS['TSFE']->fe_user->user = $user;
         $GLOBALS['TSFE']->fe_user->setKey('user', 'fe_typo_user', $user);
-        //$GLOBALS['TSFE']->fe_user->user = $GLOBALS['TSFE']->fe_user->fetchUserSession();
+        $GLOBALS['TSFE']->fe_user->setKey('ses', 'fe_typo_user', $user);
+        $GLOBALS['TSFE']->fe_user->user = $GLOBALS['TSFE']->fe_user->fetchUserSession();
         $GLOBALS['TSFE']->fe_user->setAndSaveSessionData('user', TRUE);
         $this->ses_id = $GLOBALS['TSFE']->fe_user->fetchUserSession();
+        //echo print_r($this->ses_id,true);exit;
+        // $GLOBALS['TSFE']->fe_user->setKey('user', 'ses_id', $this->ses_id);
+        // $session = $GLOBALS['TSFE']->fe_user->user['ses_id'];
+        // setcookie('fe_typo_user', $session, NULL, "/");
         $reflection = new ReflectionClass($GLOBALS['TSFE']->fe_user);
         $setSessionCookieMethod = $reflection->getMethod('setSessionCookie');
         $setSessionCookieMethod->setAccessible(TRUE);
